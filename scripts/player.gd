@@ -1,0 +1,60 @@
+extends CharacterBody3D
+
+const SPEED = 6.0
+const JUMP_VELOCITY = 5.0
+const MOUSE_SENS = 0.003
+const RESPAWN_Y = -20.0
+
+var respawn_position: Vector3
+
+@onready var camera_pivot: Node3D = $CameraPivot
+@onready var spring_arm: SpringArm3D = $CameraPivot/SpringArm3D
+
+func _ready() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		camera_pivot.rotate_y(-event.relative.x * MOUSE_SENS)
+		spring_arm.rotate_x(-event.relative.y * MOUSE_SENS)
+		spring_arm.rotation.x = clamp(
+			spring_arm.rotation.x,
+			deg_to_rad(-80),
+			deg_to_rad(80)
+		)
+
+	if event.is_action_pressed("release_mouse"):
+		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		else:
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+func _physics_process(delta: float) -> void:
+	if not is_on_floor():
+		velocity.y -= ProjectSettings.get_setting("physics/3d/default_gravity") * delta
+
+	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+
+	var cam_basis := camera_pivot.global_transform.basis
+	var forward := -cam_basis.z
+	var right := cam_basis.x
+	forward.y = 0.0
+	right.y = 0.0
+	if forward.length() > 0.0:
+		forward = forward.normalized()
+	if right.length() > 0.0:
+		right = right.normalized()
+
+	var move_dir := forward * -input_dir.y + right * input_dir.x
+
+	velocity.x = move_dir.x * SPEED
+	velocity.z = move_dir.z * SPEED
+
+	if Input.is_action_just_pressed("jump") and is_on_floor():
+		velocity.y = JUMP_VELOCITY
+
+	move_and_slide()
+
+	if global_position.y < RESPAWN_Y:
+		global_position = respawn_position
+		velocity = Vector3.ZERO

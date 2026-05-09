@@ -1,0 +1,10 @@
+# Godot 4 editor/cache files
+.godot/
+*.uid
+
+# Export builds
+builds/
+
+# OS
+.DS_Store
+Thumbs.db
