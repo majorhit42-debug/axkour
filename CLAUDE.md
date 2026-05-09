@@ -75,6 +75,12 @@ This will evolve. Update after every completed prompt.
 - Green FINISH platform with "FINISH!" label after Gate 3
 - Player node added to "player" group for gate detection
 
+### Don't Touch Red (prompt 03 — 2026-05-09)
+- `HazardTile` scene (2×0.5×2): `is_red` toggle; red tiles vanish after 0.3s on player contact, safe tiles pick a random color (blue/yellow/green/purple) at runtime
+- `RedTileGrid` scene: spawns a grid of HazardTiles from an `@export_multiline` pattern string (`R`/`S`) — easy to redesign without code
+- level_01 Don't Touch Red section: Reconverge3 → 10 stepping stones (zigzag winding, 4 red / 6 safe, navigable safe path) → MidPlatform → 6×6 tile grid → FinishPlatform
+- FinishPlatform moved to end of full level (after tile grid)
+
 ---
 
 ## Planned / In-Progress Features

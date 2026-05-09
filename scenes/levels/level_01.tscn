@@ -1,8 +1,10 @@
-[gd_scene load_steps=18 format=3 uid="uid://blevel01scn1"]
+[gd_scene load_steps=20 format=3 uid="uid://blevel01scn1"]
 
 [ext_resource type="PackedScene" uid="uid://bplayerscene1" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://scripts/level.gd" id="2_level_script"]
 [ext_resource type="PackedScene" uid="uid://bquizgatescn1" path="res://scenes/quiz/quiz_gate.tscn" id="3_quiz_gate"]
+[ext_resource type="PackedScene" uid="uid://bhazardtile01" path="res://scenes/hazard/hazard_tile.tscn" id="4_hazard_tile"]
+[ext_resource type="PackedScene" uid="uid://bredtilegrid1" path="res://scenes/hazard/red_tile_grid.tscn" id="5_red_tile_grid"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
 
@@ -58,7 +60,7 @@ environment = SubResource("Environment_1")
 rotation = Vector3(-0.785398, 0.523599, 0)
 light_energy = 1.0
 
-; --- Jump platforms (from prompt 01) ---
+; --- Jump platforms (prompt 01) ---
 
 [node name="StartPlatform" type="StaticBody3D" parent="."]
 position = Vector3(0, 0, 0)
@@ -114,7 +116,7 @@ mesh = SubResource("BoxMesh_3")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Platform5"]
 shape = SubResource("BoxShape3D_3")
 
-; --- Quiz section ---
+; --- Quiz section (prompt 02) ---
 
 [node name="Approach1" type="StaticBody3D" parent="."]
 position = Vector3(1, 0.4, 44)
@@ -155,8 +157,79 @@ shape = SubResource("BoxShape3D_4")
 position = Vector3(1, 0.4, 83)
 question_id = "q03_axerooms_created"
 
+; --- Don't Touch Red section (prompt 03) ---
+
+[node name="Reconverge3" type="StaticBody3D" parent="."]
+position = Vector3(1, 0.4, 89)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Reconverge3"]
+mesh = SubResource("BoxMesh_4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Reconverge3"]
+shape = SubResource("BoxShape3D_4")
+
+; Stepping stones — safe path: S1 -> S2 -> S4 -> S6 -> S8 -> S10
+; Red traps are beside each pair of safe tiles
+
+[node name="Stone1" parent="." instance=ExtResource("4_hazard_tile")]
+position = Vector3(1, 0.4, 94)
+is_red = false
+
+[node name="Stone2" parent="." instance=ExtResource("4_hazard_tile")]
+position = Vector3(-1, 0.4, 98)
+is_red = false
+
+[node name="Stone3" parent="." instance=ExtResource("4_hazard_tile")]
+position = Vector3(3, 0.4, 98)
+is_red = true
+
+[node name="Stone4" parent="." instance=ExtResource("4_hazard_tile")]
+position = Vector3(-1, 0.4, 102)
+is_red = false
+
+[node name="Stone5" parent="." instance=ExtResource("4_hazard_tile")]
+position = Vector3(3, 0.4, 102)
+is_red = true
+
+[node name="Stone6" parent="." instance=ExtResource("4_hazard_tile")]
+position = Vector3(3, 0.4, 106)
+is_red = false
+
+[node name="Stone7" parent="." instance=ExtResource("4_hazard_tile")]
+position = Vector3(-1, 0.4, 106)
+is_red = true
+
+[node name="Stone8" parent="." instance=ExtResource("4_hazard_tile")]
+position = Vector3(3, 0.4, 110)
+is_red = false
+
+[node name="Stone9" parent="." instance=ExtResource("4_hazard_tile")]
+position = Vector3(-1, 0.4, 110)
+is_red = true
+
+[node name="Stone10" parent="." instance=ExtResource("4_hazard_tile")]
+position = Vector3(1, 0.4, 114)
+is_red = false
+
+[node name="MidPlatform" type="StaticBody3D" parent="."]
+position = Vector3(1, 0.4, 120)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MidPlatform"]
+mesh = SubResource("BoxMesh_4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MidPlatform"]
+shape = SubResource("BoxShape3D_4")
+
+; Red tile grid — 6x6 pattern, 2-unit tiles, centered at X=1
+; World X range: -5 to 7 (grid origin at X=-4), Z range: 122-134
+
+[node name="RedTileGrid" parent="." instance=ExtResource("5_red_tile_grid")]
+position = Vector3(-4, 0.4, 123)
+
+; --- Finish (moved from prompt 02) ---
+
 [node name="FinishPlatform" type="StaticBody3D" parent="."]
-position = Vector3(1, 0.4, 92)
+position = Vector3(1, 0.4, 141)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="FinishPlatform"]
 mesh = SubResource("BoxMesh_5")
@@ -166,7 +239,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_green")
 shape = SubResource("BoxShape3D_5")
 
 [node name="FinishLabel" type="Label3D" parent="."]
-position = Vector3(1, 4.65, 92)
+position = Vector3(1, 4.65, 141)
 billboard = 1
 pixel_size = 0.02
 font_size = 64

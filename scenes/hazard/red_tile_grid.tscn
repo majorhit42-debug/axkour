@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bredtilegrid1"]
+
+[ext_resource type="Script" path="res://scripts/red_tile_grid.gd" id="1_grid_script"]
+
+[node name="RedTileGrid" type="Node3D"]
+script = ExtResource("1_grid_script")

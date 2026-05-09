@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://bhazardtile01"]
+
+[ext_resource type="Script" path="res://scripts/hazard_tile.gd" id="1_hazard_script"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_1"]
+size = Vector3(2, 0.5, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
+size = Vector3(2, 0.5, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1"]
+albedo_color = Color(1, 1, 1, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2"]
+size = Vector3(2, 1, 2)
+
+[node name="HazardTile" type="StaticBody3D"]
+script = ExtResource("1_hazard_script")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_1")
+surface_material_override/0 = SubResource("StandardMaterial3D_1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_1")
+
+[node name="DetectionArea" type="Area3D" parent="."]
+position = Vector3(0, 0.75, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea"]
+shape = SubResource("BoxShape3D_2")
