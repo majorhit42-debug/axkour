@@ -1,0 +1,80 @@
+[gd_scene load_steps=6 format=3 uid="uid://bquizgatescn1"]
+
+[ext_resource type="Script" path="res://scripts/quiz_gate.gd" id="1_quiz_script"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_1"]
+size = Vector3(6, 0.5, 6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
+size = Vector3(6, 0.5, 6)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1"]
+albedo_color = Color(1, 1, 1, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2"]
+size = Vector3(6, 1, 6)
+
+[node name="QuizGate" type="Node3D" groups=["quiz_gate"]]
+script = ExtResource("1_quiz_script")
+
+[node name="QuestionLabel" type="Label3D" parent="."]
+position = Vector3(0, 5, 0)
+billboard = 1
+pixel_size = 0.012
+font_size = 64
+outline_size = 8
+outline_modulate = Color(0, 0, 0, 1)
+modulate = Color(1, 1, 1, 1)
+text = ""
+
+[node name="LeftPlatform" type="StaticBody3D" parent="."]
+position = Vector3(-4, 0, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="LeftPlatform"]
+mesh = SubResource("BoxMesh_1")
+surface_material_override/0 = SubResource("StandardMaterial3D_1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LeftPlatform"]
+shape = SubResource("BoxShape3D_1")
+
+[node name="DetectionArea" type="Area3D" parent="LeftPlatform"]
+position = Vector3(0, 0.75, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LeftPlatform/DetectionArea"]
+shape = SubResource("BoxShape3D_2")
+
+[node name="AnswerLabel" type="Label3D" parent="LeftPlatform"]
+position = Vector3(0, 3, 0)
+billboard = 1
+pixel_size = 0.012
+font_size = 64
+outline_size = 8
+outline_modulate = Color(0, 0, 0, 1)
+modulate = Color(1, 1, 1, 1)
+text = ""
+
+[node name="RightPlatform" type="StaticBody3D" parent="."]
+position = Vector3(4, 0, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="RightPlatform"]
+mesh = SubResource("BoxMesh_1")
+surface_material_override/0 = SubResource("StandardMaterial3D_1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RightPlatform"]
+shape = SubResource("BoxShape3D_1")
+
+[node name="DetectionArea" type="Area3D" parent="RightPlatform"]
+position = Vector3(0, 0.75, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RightPlatform/DetectionArea"]
+shape = SubResource("BoxShape3D_2")
+
+[node name="AnswerLabel" type="Label3D" parent="RightPlatform"]
+position = Vector3(0, 3, 0)
+billboard = 1
+pixel_size = 0.012
+font_size = 64
+outline_size = 8
+outline_modulate = Color(0, 0, 0, 1)
+modulate = Color(1, 1, 1, 1)
+text = ""

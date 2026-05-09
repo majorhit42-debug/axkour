@@ -1,7 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://blevel01scn1"]
+[gd_scene load_steps=18 format=3 uid="uid://blevel01scn1"]
 
 [ext_resource type="PackedScene" uid="uid://bplayerscene1" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="Script" path="res://scripts/level.gd" id="2_level_script"]
+[ext_resource type="PackedScene" uid="uid://bquizgatescn1" path="res://scenes/quiz/quiz_gate.tscn" id="3_quiz_gate"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
 
@@ -31,6 +32,21 @@ size = Vector3(4, 0.5, 4)
 [sub_resource type="BoxShape3D" id="BoxShape3D_3"]
 size = Vector3(4, 0.5, 4)
 
+[sub_resource type="BoxMesh" id="BoxMesh_4"]
+size = Vector3(8, 0.5, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4"]
+size = Vector3(8, 0.5, 4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_5"]
+size = Vector3(8, 0.5, 8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5"]
+size = Vector3(8, 0.5, 8)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_green"]
+albedo_color = Color(0.2, 0.9, 0.2, 1)
+
 [node name="Level" type="Node3D"]
 script = ExtResource("2_level_script")
 player_scene = ExtResource("1_player")
@@ -41,6 +57,8 @@ environment = SubResource("Environment_1")
 [node name="Sun" type="DirectionalLight3D" parent="."]
 rotation = Vector3(-0.785398, 0.523599, 0)
 light_energy = 1.0
+
+; --- Jump platforms (from prompt 01) ---
 
 [node name="StartPlatform" type="StaticBody3D" parent="."]
 position = Vector3(0, 0, 0)
@@ -95,6 +113,67 @@ mesh = SubResource("BoxMesh_3")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Platform5"]
 shape = SubResource("BoxShape3D_3")
+
+; --- Quiz section ---
+
+[node name="Approach1" type="StaticBody3D" parent="."]
+position = Vector3(1, 0.4, 44)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Approach1"]
+mesh = SubResource("BoxMesh_4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Approach1"]
+shape = SubResource("BoxShape3D_4")
+
+[node name="Gate1" parent="." instance=ExtResource("3_quiz_gate")]
+position = Vector3(1, 0.4, 51)
+question_id = "q01_game_created"
+
+[node name="Reconverge1" type="StaticBody3D" parent="."]
+position = Vector3(1, 0.4, 60)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Reconverge1"]
+mesh = SubResource("BoxMesh_4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Reconverge1"]
+shape = SubResource("BoxShape3D_4")
+
+[node name="Gate2" parent="." instance=ExtResource("3_quiz_gate")]
+position = Vector3(1, 0.4, 67)
+question_id = "q02_axels_color"
+
+[node name="Reconverge2" type="StaticBody3D" parent="."]
+position = Vector3(1, 0.4, 76)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Reconverge2"]
+mesh = SubResource("BoxMesh_4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Reconverge2"]
+shape = SubResource("BoxShape3D_4")
+
+[node name="Gate3" parent="." instance=ExtResource("3_quiz_gate")]
+position = Vector3(1, 0.4, 83)
+question_id = "q03_axerooms_created"
+
+[node name="FinishPlatform" type="StaticBody3D" parent="."]
+position = Vector3(1, 0.4, 92)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="FinishPlatform"]
+mesh = SubResource("BoxMesh_5")
+surface_material_override/0 = SubResource("StandardMaterial3D_green")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FinishPlatform"]
+shape = SubResource("BoxShape3D_5")
+
+[node name="FinishLabel" type="Label3D" parent="."]
+position = Vector3(1, 4.65, 92)
+billboard = 1
+pixel_size = 0.02
+font_size = 64
+outline_size = 8
+outline_modulate = Color(0, 0, 0, 1)
+modulate = Color(1, 1, 1, 1)
+text = "FINISH!"
 
 [node name="PlayerStart" type="Marker3D" parent="."]
 position = Vector3(0, 1.5, 0)

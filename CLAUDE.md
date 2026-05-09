@@ -65,6 +65,16 @@ This will evolve. Update after every completed prompt.
 - Level spawns the player dynamically; `respawn_position` set from `PlayerStart` Marker3D
 - HTML5 export preset configured (Web, single-threaded, builds/web/index.html)
 
+### Quiz Gates (prompt 02 — 2026-05-09)
+- `assets/questions.json` question pool — JSON-driven, easy to edit
+- Three seed questions: game creation date, Axel's favorite color, Axerooms creation date
+- `QuizGate` scene: side-by-side fork platforms (8 units apart), billboarded question + answer labels
+- Wrong platform: turns red, explodes after 1.5s — player falls and respawns via existing respawn logic
+- Correct platform: no-op, player continues forward
+- Three gates in level_01 (q01 → q02 → q03) with approach and reconverge platforms between each
+- Green FINISH platform with "FINISH!" label after Gate 3
+- Player node added to "player" group for gate detection
+
 ---
 
 ## Planned / In-Progress Features
@@ -76,14 +86,10 @@ This will evolve. Update after every completed prompt.
 - **Slap button** — short-range melee that pushes NPCs/players off platforms; lethal if they fall
 
 ### Quiz / Branching Platforms
-- At decision points, the path splits into two (or more) labeled platforms — each labeled with a possible answer to a question
-- **Wrong platform**: ~1.5s delay, then explodes, dropping the player into the void
-- **Right platform**: stable, continues the run
-- Question types: about the game itself ("When was Axkour created?"), real-world trivia, age-appropriate
-- Question pool stored as a JSON or `.gd` dictionary so Axel can add/edit easily
-- Example seed questions:
-  - "When was this game created?" → May 8, 2026
-  - "When was Axerooms created?" → March 2026
+- ~~Basic gate mechanic (fork platforms, wrong explodes, JSON pool)~~ **Done — see Current Features**
+- Variable answer counts (>2) — planned
+- Audio / particle FX on explosion — planned
+- Question types: about the game itself, real-world trivia, age-appropriate
 
 ### Golden Parkour
 - Special platforms that carry coins
