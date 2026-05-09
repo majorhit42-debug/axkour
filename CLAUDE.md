@@ -9,7 +9,7 @@
 A father-son project — Todd builds and designs, Axel plays, designs, and helps execute prompts in Claude Code.
 
 **Live URL:** [TODO: deploy to Vercel and add URL]
-**Repository:** [TODO: add GitHub repo URL]
+**Repository:** https://github.com/majorhit42-debug/axkour
 
 ---
 
