@@ -5,7 +5,7 @@ const JUMP_VELOCITY = 5.0
 const MOUSE_SENS = 0.003
 const RIGHT_STICK_SENS = 0.05
 const RESPAWN_Y = -20.0
-const CAMERA_Y_DAMP = 6.0  # lower = more lag behind the player's jump
+const CAMERA_Y_DAMP = 2.5  # lower = more lag behind the player's jump
 
 var respawn_position: Vector3
 var camera_y: float
@@ -17,10 +17,15 @@ var _camera_origin: Vector3
 var _shake_timer := 0.0
 var _shake_intensity := 0.0
 var _shake_duration := 0.0
+var _knockback_timer := 0.0
 
 func _ready() -> void:
 	camera_y = global_position.y
 	_camera_origin = _camera.position
+
+func apply_knockback(force: Vector3) -> void:
+	velocity = force
+	_knockback_timer = 0.8
 
 func shake_camera(intensity: float, duration: float) -> void:
 	_shake_intensity = intensity
@@ -61,35 +66,42 @@ func _unhandled_input(event: InputEvent) -> void:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _physics_process(delta: float) -> void:
-	if not is_on_floor():
-		velocity.y -= ProjectSettings.get_setting("physics/3d/default_gravity") * delta
+	if _knockback_timer > 0.0:
+		_knockback_timer -= delta
+		if not is_on_floor():
+			velocity.y -= ProjectSettings.get_setting("physics/3d/default_gravity") * delta
+		move_and_slide()
+	else:
+		if not is_on_floor():
+			velocity.y -= ProjectSettings.get_setting("physics/3d/default_gravity") * delta
 
-	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+		var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 
-	var cam_basis := camera_pivot.global_transform.basis
-	var forward := -cam_basis.z
-	var right := cam_basis.x
-	forward.y = 0.0
-	right.y = 0.0
-	if forward.length() > 0.0:
-		forward = forward.normalized()
-	if right.length() > 0.0:
-		right = right.normalized()
+		var cam_basis := camera_pivot.global_transform.basis
+		var forward := -cam_basis.z
+		var right := cam_basis.x
+		forward.y = 0.0
+		right.y = 0.0
+		if forward.length() > 0.0:
+			forward = forward.normalized()
+		if right.length() > 0.0:
+			right = right.normalized()
 
-	var move_dir := forward * -input_dir.y + right * input_dir.x
+		var move_dir := forward * -input_dir.y + right * input_dir.x
 
-	velocity.x = move_dir.x * SPEED
-	velocity.z = move_dir.z * SPEED
+		velocity.x = move_dir.x * SPEED
+		velocity.z = move_dir.z * SPEED
 
-	if Input.is_action_just_pressed("jump") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
+		if Input.is_action_just_pressed("jump") and is_on_floor():
+			velocity.y = JUMP_VELOCITY
 
-	move_and_slide()
+		move_and_slide()
 
 	if global_position.y < RESPAWN_Y:
 		global_position = respawn_position
 		camera_y = respawn_position.y
 		velocity = Vector3.ZERO
+		_knockback_timer = 0.0
 
 	camera_y = lerp(camera_y, global_position.y, CAMERA_Y_DAMP * delta)
 	camera_pivot.global_position.y = camera_y

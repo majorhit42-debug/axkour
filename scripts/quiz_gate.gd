@@ -4,7 +4,7 @@ class_name QuizGate
 const EXPLOSION_SCENE := preload("res://scenes/effects/explosion.tscn")
 
 @export var question_id: String = ""
-@export var explode_delay: float = 1.5
+@export var explode_delay: float = 0.3
 
 var correct_side: String = "left"
 var _wrong_triggered: bool = false
