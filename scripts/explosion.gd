@@ -2,15 +2,16 @@ extends Node3D
 
 const SHAKE_INTENSITY := 0.4
 const SHAKE_DURATION := 0.5
-const KNOCKBACK_FORCE := 18.0
-const KNOCKBACK_UP := 10.0
-const KNOCKBACK_RADIUS := 6.0
+const KNOCKBACK_FORCE := 30.0
+const KNOCKBACK_UP := 40.0
+const KNOCKBACK_RADIUS := 8.0
 const LIFETIME := 1.5
 
 func _ready() -> void:
 	call_deferred("_start_explosion")
 
 func _start_explosion() -> void:
+	_setup_flash()
 	_setup_core()
 	_setup_embers()
 	_setup_light()
@@ -18,6 +19,22 @@ func _start_explosion() -> void:
 	_knockback_players()
 	await get_tree().create_timer(LIFETIME).timeout
 	queue_free()
+
+func _setup_flash() -> void:
+	var flash: MeshInstance3D = $FlashSphere
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(1.0, 0.55, 0.1, 0.9)
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.emission_enabled = true
+	mat.emission = Color(1.0, 0.4, 0.0)
+	mat.emission_energy_multiplier = 4.0
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	flash.material_override = mat
+	flash.scale = Vector3.ONE * 0.2
+	var tween := create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(flash, "scale", Vector3.ONE * 5.0, 0.15)
+	tween.tween_property(mat, "albedo_color", Color(1.0, 0.55, 0.1, 0.0), 0.3)
 
 func _setup_core() -> void:
 	var core: CPUParticles3D = $Core
@@ -65,6 +82,8 @@ func _shake_camera() -> void:
 	for p in get_tree().get_nodes_in_group("player"):
 		if p.has_method("shake_camera"):
 			p.shake_camera(SHAKE_INTENSITY, SHAKE_DURATION)
+		if p.has_method("flash_screen"):
+			p.flash_screen()
 
 func _knockback_players() -> void:
 	for p in get_tree().get_nodes_in_group("player"):
