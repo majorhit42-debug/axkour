@@ -75,7 +75,7 @@ func _knockback_players() -> void:
 	for p in get_tree().get_nodes_in_group("player"):
 		var dist := global_position.distance_to(p.global_position)
 		if dist <= KNOCKBACK_RADIUS:
-			var dir := (p.global_position - global_position).normalized()
-			var force := Vector3(dir.x * KNOCKBACK_FORCE, KNOCKBACK_UP, dir.z * KNOCKBACK_FORCE)
+			var dir: Vector3 = (p.global_position - global_position).normalized()
+			var force: Vector3 = Vector3(dir.x * KNOCKBACK_FORCE, KNOCKBACK_UP, dir.z * KNOCKBACK_FORCE)
 			if p.has_method("apply_knockback"):
 				p.apply_knockback(force)
