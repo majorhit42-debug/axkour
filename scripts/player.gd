@@ -3,6 +3,7 @@ extends CharacterBody3D
 const SPEED = 6.0
 const JUMP_VELOCITY = 5.0
 const MOUSE_SENS = 0.003
+const RIGHT_STICK_SENS = 0.05
 const RESPAWN_Y = -20.0
 const CAMERA_Y_DAMP = 6.0  # lower = more lag behind the player's jump
 
@@ -68,3 +69,9 @@ func _physics_process(delta: float) -> void:
 
 	camera_y = lerp(camera_y, global_position.y, CAMERA_Y_DAMP * delta)
 	camera_pivot.global_position.y = camera_y
+
+	var look := Input.get_vector("look_left", "look_right", "look_up", "look_down")
+	if look.length() > 0.0:
+		camera_pivot.rotate_y(-look.x * RIGHT_STICK_SENS)
+		spring_arm.rotate_x(-look.y * RIGHT_STICK_SENS)
+		spring_arm.rotation.x = clamp(spring_arm.rotation.x, deg_to_rad(-80), deg_to_rad(80))
