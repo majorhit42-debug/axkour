@@ -47,6 +47,9 @@ axkour/
 │   ├── quiz_gate.gd           # Fork detection, wrong-answer explosion
 │   ├── hazard_tile.gd         # Color assignment, fall-trigger logic
 │   └── red_tile_grid.gd       # Pattern parser → HazardTile spawner
+├── scenes/
+│   └── effects/
+│       └── explosion.tscn     # Reusable explosion: CPUParticles3D core+embers + OmniLight3D
 ├── assets/
 │   ├── questions.json         # Question pool (edit here to add/change questions)
 │   ├── audio/
@@ -98,6 +101,14 @@ axkour/
 - Mouse capture fixed for web: click anywhere on the game canvas to lock, Escape to release (browser requires a user gesture before pointer lock)
 - Camera Y damping: camera lags behind the player's vertical position during jumps (`CAMERA_Y_DAMP = 6.0`)
 - Controller support: left stick moves, right stick looks, A/Cross jumps, Start releases mouse — keyboard+mouse works simultaneously
+
+### Explosion FX (prompt 05 — 2026-05-10)
+- Reusable `Explosion` scene (`scenes/effects/explosion.tscn`) with `CPUParticles3D` (not GPU — required for WebGL 2.0 / Compatibility renderer)
+- Two particle emitters: red core (slow, large, zero gravity) + orange embers (fast, fly out, fall with gravity)
+- `OmniLight3D` flash: orange-white, fades from energy 4.0 → 0 over 0.4s via tween
+- Camera shake: 0.1 intensity over 0.25s, fades linearly, no Z-axis pulse
+- Explosion self-destructs after 1.5s; added to current_scene (not tile/platform) so queue_free() on parent doesn't kill it early
+- Triggers on: red hazard tile contact (after 0.3s fall_delay), wrong quiz platform (after 1.5s explode_delay)
 
 ---
 

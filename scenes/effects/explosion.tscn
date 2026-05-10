@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://explosion_effect01"]
+
+[ext_resource type="Script" path="res://scripts/explosion.gd" id="1_explosion_script"]
+
+[node name="Explosion" type="Node3D"]
+script = ExtResource("1_explosion_script")
+
+[node name="Core" type="CPUParticles3D" parent="."]
+
+[node name="Embers" type="CPUParticles3D" parent="."]
+
+[node name="Light" type="OmniLight3D" parent="."]

@@ -1,6 +1,8 @@
 extends StaticBody3D
 class_name HazardTile
 
+const EXPLOSION_SCENE := preload("res://scenes/effects/explosion.tscn")
+
 const RED_COLOR := Color(1.0, 0.15, 0.15)
 const SAFE_COLORS := [
 	Color(0.4, 0.6, 1.0),  # blue
@@ -31,4 +33,10 @@ func _on_player_entered(body: Node3D) -> void:
 		return
 	_triggered = true
 	await get_tree().create_timer(fall_delay).timeout
+	_spawn_explosion()
 	queue_free()
+
+func _spawn_explosion() -> void:
+	var explosion := EXPLOSION_SCENE.instantiate()
+	get_tree().current_scene.add_child(explosion)
+	explosion.global_position = global_position + Vector3(0, 0.5, 0)

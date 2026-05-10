@@ -1,6 +1,8 @@
 extends Node3D
 class_name QuizGate
 
+const EXPLOSION_SCENE := preload("res://scenes/effects/explosion.tscn")
+
 @export var question_id: String = ""
 @export var explode_delay: float = 1.5
 
@@ -35,4 +37,10 @@ func _trigger_wrong(platform: StaticBody3D) -> void:
 	red_mat.albedo_color = Color.RED
 	mesh.set_surface_override_material(0, red_mat)
 	await get_tree().create_timer(explode_delay).timeout
+	_spawn_explosion(platform.global_position)
 	platform.queue_free()
+
+func _spawn_explosion(pos: Vector3) -> void:
+	var explosion := EXPLOSION_SCENE.instantiate()
+	get_tree().current_scene.add_child(explosion)
+	explosion.global_position = pos + Vector3(0, 0.5, 0)

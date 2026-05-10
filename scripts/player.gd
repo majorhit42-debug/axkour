@@ -12,9 +12,33 @@ var camera_y: float
 
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var spring_arm: SpringArm3D = $CameraPivot/SpringArm3D
+@onready var _camera: Camera3D = $CameraPivot/SpringArm3D/Camera3D
+var _camera_origin: Vector3
+var _shake_timer := 0.0
+var _shake_intensity := 0.0
+var _shake_duration := 0.0
 
 func _ready() -> void:
 	camera_y = global_position.y
+	_camera_origin = _camera.position
+
+func shake_camera(intensity: float, duration: float) -> void:
+	_shake_intensity = intensity
+	_shake_duration = duration
+	_shake_timer = duration
+
+func _process(delta: float) -> void:
+	if _shake_timer > 0.0:
+		_shake_timer -= delta
+		var t := clamp(_shake_timer / _shake_duration, 0.0, 1.0)
+		var amount := _shake_intensity * t
+		_camera.position = _camera_origin + Vector3(
+			randf_range(-amount, amount),
+			randf_range(-amount, amount),
+			0.0
+		)
+	elif _camera.position != _camera_origin:
+		_camera.position = _camera_origin
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
