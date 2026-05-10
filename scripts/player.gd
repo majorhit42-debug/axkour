@@ -4,16 +4,22 @@ const SPEED = 6.0
 const JUMP_VELOCITY = 5.0
 const MOUSE_SENS = 0.003
 const RESPAWN_Y = -20.0
+const CAMERA_Y_DAMP = 6.0  # lower = more lag behind the player's jump
 
 var respawn_position: Vector3
+var camera_y: float
 
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var spring_arm: SpringArm3D = $CameraPivot/SpringArm3D
 
 func _ready() -> void:
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	camera_y = global_position.y
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
 	if event is InputEventMouseMotion:
 		camera_pivot.rotate_y(-event.relative.x * MOUSE_SENS)
 		spring_arm.rotate_x(-event.relative.y * MOUSE_SENS)
@@ -57,4 +63,8 @@ func _physics_process(delta: float) -> void:
 
 	if global_position.y < RESPAWN_Y:
 		global_position = respawn_position
+		camera_y = respawn_position.y
 		velocity = Vector3.ZERO
+
+	camera_y = lerp(camera_y, global_position.y, CAMERA_Y_DAMP * delta)
+	camera_pivot.global_position.y = camera_y
