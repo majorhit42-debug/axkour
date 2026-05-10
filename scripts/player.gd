@@ -13,7 +13,6 @@ var camera_y: float
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var spring_arm: SpringArm3D = $CameraPivot/SpringArm3D
 @onready var _camera: Camera3D = $CameraPivot/SpringArm3D/Camera3D
-@onready var _flash_rect: ColorRect = $ScreenFlash/FlashRect
 var _camera_origin: Vector3
 var _shake_timer := 0.0
 var _shake_intensity := 0.0
@@ -27,11 +26,6 @@ func _ready() -> void:
 func apply_knockback(force: Vector3) -> void:
 	velocity = force
 	_knockback_timer = 5.0
-
-func flash_screen() -> void:
-	_flash_rect.color = Color(1.0, 0.5, 0.1, 0.85)
-	var tween := create_tween()
-	tween.tween_property(_flash_rect, "color", Color(1.0, 0.5, 0.1, 0.0), 0.25)
 
 func shake_camera(intensity: float, duration: float) -> void:
 	_shake_intensity = intensity

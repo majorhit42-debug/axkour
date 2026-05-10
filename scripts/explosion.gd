@@ -82,8 +82,6 @@ func _shake_camera() -> void:
 	for p in get_tree().get_nodes_in_group("player"):
 		if p.has_method("shake_camera"):
 			p.shake_camera(SHAKE_INTENSITY, SHAKE_DURATION)
-		if p.has_method("flash_screen"):
-			p.flash_screen()
 
 func _knockback_players() -> void:
 	for p in get_tree().get_nodes_in_group("player"):
