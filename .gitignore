@@ -1,10 +1,18 @@
-# Godot 4 editor/cache files
+# Godot 4+ editor cache
 .godot/
-*.uid
 
-# Export builds
-builds/
+# Build outputs (we DO want builds/web/ committed — that's what Vercel serves)
+builds/desktop/
+builds/mobile/
 
-# OS
+# OS files
 .DS_Store
 Thumbs.db
+*:Zone.Identifier
+
+# Project working files
+prompts/info/
+
+# Editors
+.vscode/
+.idea/
