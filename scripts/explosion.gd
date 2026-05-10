@@ -18,10 +18,6 @@ func _ready() -> void:
 
 func _setup_core() -> void:
 	var core: CPUParticles3D = $Core
-	var sphere := SphereMesh.new()
-	sphere.radius = 0.3
-	sphere.height = 0.6
-	core.mesh = sphere
 	core.amount = 60
 	core.lifetime = 0.7
 	core.one_shot = true
@@ -39,10 +35,6 @@ func _setup_core() -> void:
 
 func _setup_embers() -> void:
 	var embers: CPUParticles3D = $Embers
-	var sphere := SphereMesh.new()
-	sphere.radius = 0.08
-	sphere.height = 0.16
-	embers.mesh = sphere
 	embers.amount = 80
 	embers.lifetime = 1.2
 	embers.one_shot = true
