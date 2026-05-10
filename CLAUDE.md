@@ -94,6 +94,11 @@ axkour/
 - `vercel.json` added: serves `builds/web/`, correct `.wasm` MIME type
 - Live at https://axkour.vercel.app/ — auto-deploys on every `git push`
 
+### Post-deploy fixes & controller support (2026-05-10)
+- Mouse capture fixed for web: click anywhere on the game canvas to lock, Escape to release (browser requires a user gesture before pointer lock)
+- Camera Y damping: camera lags behind the player's vertical position during jumps (`CAMERA_Y_DAMP = 6.0`)
+- Controller support: left stick moves, right stick looks, A/Cross jumps, Start releases mouse — keyboard+mouse works simultaneously
+
 ---
 
 ## Roadmap
