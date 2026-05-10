@@ -8,6 +8,9 @@ const KNOCKBACK_RADIUS := 6.0
 const LIFETIME := 1.5
 
 func _ready() -> void:
+	call_deferred("_start_explosion")
+
+func _start_explosion() -> void:
 	_setup_core()
 	_setup_embers()
 	_setup_light()
