@@ -30,8 +30,8 @@ func shake_camera(intensity: float, duration: float) -> void:
 func _process(delta: float) -> void:
 	if _shake_timer > 0.0:
 		_shake_timer -= delta
-		var t := clamp(_shake_timer / _shake_duration, 0.0, 1.0)
-		var amount := _shake_intensity * t
+		var t: float = clamp(_shake_timer / _shake_duration, 0.0, 1.0)
+		var amount: float = _shake_intensity * t
 		_camera.position = _camera_origin + Vector3(
 			randf_range(-amount, amount),
 			randf_range(-amount, amount),
