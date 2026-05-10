@@ -8,7 +8,7 @@
 
 A father-son project — Todd builds and designs, Axel plays, designs, and helps execute prompts in Claude Code.
 
-**Live URL:** [TODO: deploy to Vercel and add URL]
+**Live URL:** https://axkour.vercel.app/
 **Repository:** https://github.com/majorhit42-debug/axkour
 
 ---
@@ -88,6 +88,50 @@ axkour/
 - level_01 Don't Touch Red section: Reconverge3 → 10 stepping stones (zigzag winding, 4 red / 6 safe, navigable safe path) → MidPlatform → 6×6 tile grid → FinishPlatform
 - FinishPlatform moved to end of full level (after tile grid)
 
+### Deploy to Vercel (prompt 04 — 2026-05-10)
+- Linux Godot 4.6.2 binary installed in WSL — headless exports work from the terminal
+- `.gitignore` updated: `builds/web/` committed, editor cache and Zone.Identifier files excluded
+- `vercel.json` added: serves `builds/web/`, correct `.wasm` MIME type
+- Live at https://axkour.vercel.app/ — auto-deploys on every `git push`
+
+---
+
+## Roadmap
+
+### ~~v0.1 — Playable demo~~ ✓ Done
+Movement, quiz gates, Don't Touch Red, deployed to Vercel.
+
+### v0.2 — Economy (~3 prompts)
+- Coins on golden-parkour platforms with HUD counter
+- Item store as a physical zone at level start with purchase flow
+- First cosmetics: basic humanoid model (replaces capsule), hat slot, body color tint
+
+### v0.3 — Combat (~3 prompts)
+- CPU opponent bots running the course (simple path-followers first)
+- Slap mechanic — short-range push, lethal if target falls — unlocked via store
+- Balloons as area attack item
+
+### v0.4 — Remaining store items (~1–2 prompts)
+- Magic carpet — single-use section skip
+- Powerups grab bag: jump boost, brief invincibility, TBD with Axel
+
+### v0.5 — Local split-screen multiplayer (~1–2 prompts)
+- Two `SubViewport`s side by side; P1 keyboard+mouse, P2 gamepad
+- No networking — entirely local
+
+### v0.6 — Audio pass (~1 prompt)
+- Background music, jump/footstep/slap/balloon-pop SFX, store cha-ching
+- Free SFX libraries; audio latency fix (50–80ms output latency for web)
+
+### v0.7 — Real levels & level select (~3–5 prompts)
+- level_01 stays the test bed; new levels introduce concepts gradually
+- Level select screen
+
+### v0.8 — Menus, polish, ship (~2–3 prompts)
+- Main menu, pause, settings, level complete state
+- Particle FX: tile explosions, balloon pop confetti, FINISH celebration
+- Animation polish
+
 ---
 
 ## Planned / In-Progress Features
@@ -127,12 +171,12 @@ axkour/
 - Fall below the void Y-threshold → respawn at level start (the item store)
 - Unlimited respawns — no lives system in v1
 
-### CPU / AI Opponents (Phase 2)
+### CPU / AI Opponents (v0.3)
 - AI bots that run the same course as the player
 - Slap-able / push-off-able
 - Stretch goal: bots that try to slap back
 
-### Local Split-Screen Multiplayer (Phase 3)
+### Local Split-Screen Multiplayer (v0.5)
 - Two cameras, two viewports side by side (Godot supports this with `SubViewport`s)
 - Player 1: keyboard + mouse
 - Player 2: gamepad
@@ -187,7 +231,7 @@ git commit -m "Brief description of what was added"
 git push
 ```
 
-Vercel auto-deploys from main once we wire it up. Every push goes live.
+Vercel auto-deploys from main within ~30 seconds of every push. Every push goes live at https://axkour.vercel.app/
 
 ---
 
