@@ -28,27 +28,34 @@ A father-son project — Todd builds and designs, Axel plays, designs, and helps
 
 ```
 axkour/
-├── project.godot              # Godot project file
+├── project.godot              # Godot 4.6, Compatibility renderer
+├── export_presets.cfg         # Web export preset (builds/web/index.html)
 ├── scenes/
-│   ├── main.tscn              # Entry scene (loads current level)
+│   ├── main.tscn              # Entry scene — instances current level
 │   ├── player/
-│   │   └── player.tscn        # Player character (CharacterBody3D)
-│   └── levels/
-│       └── level_01.tscn      # First test level
+│   │   └── player.tscn        # CharacterBody3D — capsule + spring-arm camera
+│   ├── levels/
+│   │   └── level_01.tscn      # Full level: jump platforms → quiz gates → hazard tiles → finish
+│   ├── quiz/
+│   │   └── quiz_gate.tscn     # Reusable fork gate with question/answer labels
+│   └── hazard/
+│       ├── hazard_tile.tscn   # 2×2 tile; red = lethal after 0.3s
+│       └── red_tile_grid.tscn # Pattern-driven grid of HazardTiles
 ├── scripts/
-│   ├── player.gd
-│   └── level.gd
+│   ├── player.gd              # Movement, camera, respawn
+│   ├── level.gd               # JSON loading, gate config, player spawn
+│   ├── quiz_gate.gd           # Fork detection, wrong-answer explosion
+│   ├── hazard_tile.gd         # Color assignment, fall-trigger logic
+│   └── red_tile_grid.gd       # Pattern parser → HazardTile spawner
 ├── assets/
-│   ├── audio/                 # [TODO: confirm folder layout]
+│   ├── questions.json         # Question pool (edit here to add/change questions)
+│   ├── audio/
 │   ├── models/
 │   └── textures/
-├── prompts/
-│   ├── ready/                 # Queued Claude Code prompts
-│   └── done/                  # Completed prompts
-└── export_presets.cfg         # Web + desktop export settings
+└── prompts/
+    ├── ready/                 # Queued prompts
+    └── done/                  # Completed prompts (01, 02, 03)
 ```
-
-This will evolve. Update after every completed prompt.
 
 ---
 

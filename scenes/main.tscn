@@ -1,7 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://bmainscene001"]
+[gd_scene format=3 uid="uid://bmainscene001"]
 
 [ext_resource type="PackedScene" uid="uid://blevel01scn1" path="res://scenes/levels/level_01.tscn" id="1_level01"]
 
-[node name="Main" type="Node"]
+[node name="Main" type="Node" unique_id=210704951]
 
-[node name="Level01" parent="." instance=ExtResource("1_level01")]
+[node name="Level01" parent="." unique_id=1839583928 instance=ExtResource("1_level01")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4526844, -0.20301807, -0.4330516)
