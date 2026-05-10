@@ -99,16 +99,20 @@ axkour/
 
 ### Post-deploy fixes & controller support (2026-05-10)
 - Mouse capture fixed for web: click anywhere on the game canvas to lock, Escape to release (browser requires a user gesture before pointer lock)
-- Camera Y damping: camera lags behind the player's vertical position during jumps (`CAMERA_Y_DAMP = 6.0`)
+- Camera Y damping: camera lags behind the player's vertical position during jumps (`CAMERA_Y_DAMP = 2.5` — low value = heavy lag)
 - Controller support: left stick moves, right stick looks, A/Cross jumps, Start releases mouse — keyboard+mouse works simultaneously
 
 ### Explosion FX (prompt 05 — 2026-05-10)
-- Reusable `Explosion` scene (`scenes/effects/explosion.tscn`) with `CPUParticles3D` (not GPU — required for WebGL 2.0 / Compatibility renderer)
-- Two particle emitters: red core (slow, large, zero gravity) + orange embers (fast, fly out, fall with gravity)
-- `OmniLight3D` flash: orange-white, fades from energy 4.0 → 0 over 0.4s via tween
-- Camera shake: 0.1 intensity over 0.25s, fades linearly, no Z-axis pulse
-- Explosion self-destructs after 1.5s; added to current_scene (not tile/platform) so queue_free() on parent doesn't kill it early
-- Triggers on: red hazard tile contact (after 0.3s fall_delay), wrong quiz platform (after 1.5s explode_delay)
+- Reusable `Explosion` scene (`scenes/effects/explosion.tscn`) — spawned by both hazard tiles and wrong quiz platforms (0.3s delay each)
+- Uses `CPUParticles3D` (not GPU — required for WebGL 2.0 / Compatibility renderer); particles fire via `restart()` not `emitting = true` (one-shot timing fix)
+- Two particle emitters: red core (60 particles, zero gravity) + orange embers (80 particles, fall with gravity)
+- `FlashSphere` (`MeshInstance3D`): orange emissive sphere, scales 0.2→5 in 0.15s then alpha fades to 0 over 0.3s — the primary "fireball" visual
+- `OmniLight3D` flash: energy 8.0, range 12, fades to 0 over 0.4s via tween
+- Camera shake: intensity 0.4 over 0.5s, fades linearly
+- Player knockback: `KNOCKBACK_UP=40`, `KNOCKBACK_FORCE=30` launches player ~80m into the air; input locked for 5s so they can't fight gravity; falls to Y<-20 and respawns
+- Explosion deferred one frame (`call_deferred`) so `global_position` is set before particles emit
+- Explosion added to `current_scene` (not tile/platform) so `queue_free()` on parent doesn't kill it; self-destructs after 1.5s
+- **Do not add CanvasLayer as child of Player** — breaks mouse input routing on web; screen flash was removed for this reason
 
 ---
 
