@@ -31,6 +31,30 @@
       "price": 3,
       "owned_by_default": false,
       "color": [0.2, 0.85, 0.3]
+    },
+    {
+      "id": "hat_tophat",
+      "name": "Top Hat",
+      "slot": "hat",
+      "price": 5,
+      "hat_type": "tophat",
+      "color": [0.08, 0.05, 0.05]
+    },
+    {
+      "id": "hat_party",
+      "name": "Party Hat",
+      "slot": "hat",
+      "price": 3,
+      "hat_type": "cone",
+      "color": [0.95, 0.1, 0.8]
+    },
+    {
+      "id": "hat_cowboy",
+      "name": "Cowboy Hat",
+      "slot": "hat",
+      "price": 4,
+      "hat_type": "cowboy",
+      "color": [0.6, 0.35, 0.1]
     }
   ]
 }

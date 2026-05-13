@@ -21,15 +21,23 @@ func _setup_display() -> void:
 		push_error("Pedestal references unknown item id: %s" % item_id)
 		return
 	var slot: String = item.get("slot", "")
+	var col_arr = item.get("color", [1, 1, 1])
+	var color := Color(col_arr[0], col_arr[1], col_arr[2])
+
 	if slot == "skin":
+		var mi := MeshInstance3D.new()
 		var capsule := CapsuleMesh.new()
 		capsule.radius = 0.3
 		capsule.height = 0.9
-		$DisplayItem.mesh = capsule
-		var col_arr = item.get("color", [1, 1, 1])
+		mi.mesh = capsule
 		var mat := StandardMaterial3D.new()
-		mat.albedo_color = Color(col_arr[0], col_arr[1], col_arr[2])
-		$DisplayItem.set_surface_override_material(0, mat)
+		mat.albedo_color = color
+		mi.set_surface_override_material(0, mat)
+		$DisplayItem.add_child(mi)
+	elif slot == "hat":
+		var hat_type: String = item.get("hat_type", "")
+		for mi in HatBuilder.make_meshes(hat_type, color, 0.7):
+			$DisplayItem.add_child(mi)
 
 func _refresh_label() -> void:
 	var item := ItemInventory.get_item(item_id)
@@ -54,10 +62,12 @@ func _on_equipment_changed(_slot: String, _id: String) -> void:
 func _on_body_entered(body: Node3D) -> void:
 	if body.is_in_group("player"):
 		_player_near = true
+		$Label3D.visible = true
 
 func _on_body_exited(body: Node3D) -> void:
 	if body.is_in_group("player"):
 		_player_near = false
+		$Label3D.visible = false
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _player_near:

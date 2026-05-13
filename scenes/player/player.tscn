@@ -23,6 +23,9 @@ shape = SubResource("CapsuleShape3D_1")
 mesh = SubResource("CapsuleMesh_1")
 surface_material_override/0 = SubResource("StandardMaterial3D_1")
 
+[node name="HatMount" type="Node3D" parent="."]
+position = Vector3(0, 1.3, 0)
+
 [node name="CameraPivot" type="Node3D" parent="."]
 position = Vector3(0, 1.6, 0)
 

@@ -19,6 +19,7 @@ var _fly_mode: bool = false
 @onready var spring_arm: SpringArm3D = $CameraPivot/SpringArm3D
 @onready var _camera: Camera3D = $CameraPivot/SpringArm3D/Camera3D
 @onready var _body_mesh: MeshInstance3D = $Mesh
+@onready var _hat_mount: Node3D = $HatMount
 var _camera_origin: Vector3
 var _shake_timer := 0.0
 var _shake_intensity := 0.0
@@ -30,10 +31,25 @@ func _ready() -> void:
 	_camera_origin = _camera.position
 	ItemInventory.equipment_changed.connect(_on_equipment_changed)
 	_apply_skin()
+	_apply_hat()
 
 func _on_equipment_changed(slot: String, _id: String) -> void:
 	if slot == "skin":
 		_apply_skin()
+	elif slot == "hat":
+		_apply_hat()
+
+func _apply_hat() -> void:
+	for child in _hat_mount.get_children():
+		child.queue_free()
+	var hat_id := ItemInventory.get_equipped("hat")
+	if hat_id.is_empty():
+		return
+	var item := ItemInventory.get_item(hat_id)
+	var col_arr = item.get("color", [1, 1, 1])
+	var hat_type: String = item.get("hat_type", "")
+	for mi in HatBuilder.make_meshes(hat_type, Color(col_arr[0], col_arr[1], col_arr[2]), 1.0):
+		_hat_mount.add_child(mi)
 
 func _apply_skin() -> void:
 	var skin_id := ItemInventory.get_equipped("skin")
