@@ -114,6 +114,15 @@ axkour/
 - Explosion added to `current_scene` (not tile/platform) so `queue_free()` on parent doesn't kill it; self-destructs after 1.5s
 - **Do not add CanvasLayer as child of Player** — breaks mouse input routing on web; screen flash was removed for this reason
 
+### Golden Zone: Coins, Wallet, HUD (prompt 06 — 2026-05-12)
+- `CoinWallet` autoload singleton (`scripts/coin_wallet.gd`) — global coin state with `add_coins()`, `lose_random_coins()`, and `coin_count_changed` signal
+- `Coin` scene (`scenes/coin/coin.tscn`) — `Area3D` with sphere collision; spins on Y axis; gold metallic material with emission glow; one-time collect (gone for the session after pickup)
+- `Sparkle` effect (`scenes/effects/sparkle.tscn`) — 15 gold `CPUParticles3D` particles, one-shot, auto-destructs after 1s
+- HUD (`scenes/ui/hud.tscn`) — `CanvasLayer` sibling in `main.tscn` (persists across level swaps); shows "Coins: N" top-right in gold with black outline, font size 32
+- Player respawn now calls `CoinWallet.lose_random_coins()` — random 1–3 coin penalty on death, clamped at 0
+- Golden zone in level_01: approach platform → 6 gold-tinted 3×3 platforms with 4–5 unit gaps, height variation (alternating Y=0.4/1.9), and lateral offsets — one coin above each platform
+- FinishPlatform moved to z=192 to make room for the golden zone
+
 ---
 
 ## Roadmap
@@ -169,8 +178,10 @@ Movement, quiz gates, Don't Touch Red, deployed to Vercel.
 - Question types: about the game itself, real-world trivia, age-appropriate
 
 ### Golden Parkour
-- Special platforms that carry coins
-- Coins persist between deaths within a level (TBD whether they reset on level exit)
+- ~~Coin pickups with wallet singleton, HUD counter, lose 1–3 coins on fall~~ **Done — see Current Features**
+- Coins persist between deaths within a session (runtime only — no disk save yet)
+- Save wallet to disk (for cross-session persistence) — planned
+- Shop integration (spending coins) — planned
 
 ### Item Store
 - Located at the **start** of every level — also where the player respawns after dying

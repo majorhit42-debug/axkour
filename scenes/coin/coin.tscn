@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://dcoin000001"]
+
+[ext_resource type="Script" uid="uid://dcoingd0001" path="res://scripts/coin.gd" id="1_coin"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1"]
+radius = 0.5
+
+[node name="Coin" type="Area3D"]
+script = ExtResource("1_coin")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_1")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]

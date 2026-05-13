@@ -98,6 +98,7 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 
 	if global_position.y < RESPAWN_Y:
+		CoinWallet.lose_random_coins()
 		global_position = respawn_position
 		camera_y = respawn_position.y
 		velocity = Vector3.ZERO
