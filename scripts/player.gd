@@ -6,9 +6,14 @@ const MOUSE_SENS = 0.003
 const RIGHT_STICK_SENS = 0.05
 const RESPAWN_Y = -20.0
 const CAMERA_Y_DAMP = 2.5  # lower = more lag behind the player's jump
+const FLY_SPEED = 10.0
+const _CHEAT_CODE := "axelrules"
 
 var respawn_position: Vector3
 var camera_y: float
+var _cheat_buffer: String = ""
+var _debug_mode: bool = false
+var _fly_mode: bool = false
 
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var spring_arm: SpringArm3D = $CameraPivot/SpringArm3D
@@ -82,8 +87,47 @@ func _unhandled_input(event: InputEvent) -> void:
 		else:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
+	if event is InputEventKey and event.pressed and not event.echo and event.unicode > 0:
+		_cheat_buffer += char(event.unicode).to_lower()
+		if _cheat_buffer.length() > _CHEAT_CODE.length():
+			_cheat_buffer = _cheat_buffer.right(_CHEAT_CODE.length())
+		if _cheat_buffer == _CHEAT_CODE:
+			_debug_mode = not _debug_mode
+			_cheat_buffer = ""
+			if not _debug_mode:
+				_fly_mode = false
+
+	if _debug_mode and event is InputEventKey and event.pressed and not event.echo:
+		if event.physical_keycode == KEY_1:
+			_fly_mode = not _fly_mode
+			if not _fly_mode:
+				velocity = Vector3.ZERO
+		elif event.physical_keycode == KEY_2:
+			CoinWallet.add_coins(1)
+
 func _physics_process(delta: float) -> void:
-	if _knockback_timer > 0.0:
+	if _fly_mode:
+		var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+		var cam_basis := camera_pivot.global_transform.basis
+		var forward := -cam_basis.z
+		var right := cam_basis.x
+		forward.y = 0.0
+		right.y = 0.0
+		if forward.length() > 0.0:
+			forward = forward.normalized()
+		if right.length() > 0.0:
+			right = right.normalized()
+		var move_dir := forward * -input_dir.y + right * input_dir.x
+		velocity.x = move_dir.x * FLY_SPEED
+		velocity.z = move_dir.z * FLY_SPEED
+		if Input.is_action_pressed("jump"):
+			velocity.y = FLY_SPEED
+		elif Input.is_key_pressed(KEY_SHIFT):
+			velocity.y = -FLY_SPEED
+		else:
+			velocity.y = 0.0
+		move_and_slide()
+	elif _knockback_timer > 0.0:
 		_knockback_timer -= delta
 		if not is_on_floor():
 			velocity.y -= ProjectSettings.get_setting("physics/3d/default_gravity") * delta
@@ -114,7 +158,7 @@ func _physics_process(delta: float) -> void:
 
 		move_and_slide()
 
-	if global_position.y < RESPAWN_Y:
+	if not _fly_mode and global_position.y < RESPAWN_Y:
 		CoinWallet.lose_random_coins()
 		global_position = respawn_position
 		camera_y = respawn_position.y
