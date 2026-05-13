@@ -126,10 +126,21 @@ axkour/
 ### Shop: Pedestals, ItemInventory, Color Skins (prompt 07 — 2026-05-12)
 - `ItemInventory` autoload singleton (`scripts/item_inventory.gd`) — tracks owned/equipped items per slot; `try_purchase()`, `grant()`, `equip()` APIs; loads catalog from `assets/shop_items.json`
 - `assets/shop_items.json` — item catalog: White skin (free, owned by default), Red/Blue/Green skins (3 coins each)
-- `Pedestal` scene (`scenes/shop/pedestal.tscn`) — `StaticBody3D` with dark stand, runtime-colored display capsule, billboarded Label3D showing buy/equip/equipped state, `Area3D` proximity detection
+- `Pedestal` scene (`scenes/shop/pedestal.tscn`) — `StaticBody3D` with dark stand, runtime-built display item, billboarded Label3D (hidden until player is within 1.5 units), `Area3D` proximity detection
 - Press **E** (or gamepad A) near a pedestal to buy (if you can afford it) or equip (if owned) — sparkle effect on purchase
 - Equipping a skin tints the player capsule immediately via `set_surface_override_material`
-- StartPlatform expanded to 14×10 for shop area; player spawns at back facing the 4 pedestals; gold "STORE" label floats above
+- StartPlatform expanded to 14×10 for shop area; player spawns at back (z=−3) facing two rows of pedestals; gold "STORE" label floats above
+
+### Hats + Label Proximity (2026-05-12)
+- `HatBuilder` static class (`scripts/hat_builder.gd`) — generates hat geometry (CylinderMesh parts) by `hat_type`; called by both Pedestal and Player so display and worn hat always match
+- 3 hat items in `shop_items.json`: Top Hat (5 coins, black, brim + tall crown), Party Hat (3 coins, magenta, cone), Cowboy Hat (4 coins, brown, wide brim + short crown)
+- `HatMount` Node3D added to `player.tscn` at local y=1.3 (capsule top); `_apply_hat()` clears old children and adds new mesh nodes on equip
+- Hat pedestal row at z=−1 (between spawn and skin row): Top Hat, Party Hat, Cowboy Hat at x=−3/0/3
+- Pedestal labels are hidden by default and only appear when the player enters the interact sphere — no text clutter from a distance
+
+### Debug Mode (2026-05-12)
+- Type **axelrules** anywhere to toggle debug mode on/off (sliding buffer of last 9 keys, no Enter needed)
+- While debug mode is active: **1** toggles fly mode (WASD horizontal, Space=rise, Shift=descend, no gravity, no respawn); **2** adds 1 coin
 
 ---
 
@@ -194,7 +205,7 @@ Movement, quiz gates, Don't Touch Red, deployed to Vercel.
 ### Item Store
 - ~~Shop framework: pedestals at spawn, ItemInventory autoload, E to buy/equip, 4 color skins~~ **Done — see Current Features**
 - Remaining buyable items (each needs its own prompt):
-  - **Hats** — equippable on the head (needs character model first)
+  - ~~**Hats** — equippable on the head~~ **Done — Top Hat, Party Hat, Cowboy Hat; see Current Features**
   - **Costumes** — full outfit swap (needs character model first)
   - **Balloons** — multiple colors; can be popped to hurt nearby characters' ears (offensive AOE) — tied to combat system
   - **Magic carpet** — single-use, lets you skip a parkour section
