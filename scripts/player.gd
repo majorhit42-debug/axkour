@@ -13,6 +13,7 @@ var camera_y: float
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var spring_arm: SpringArm3D = $CameraPivot/SpringArm3D
 @onready var _camera: Camera3D = $CameraPivot/SpringArm3D/Camera3D
+@onready var _body_mesh: MeshInstance3D = $Mesh
 var _camera_origin: Vector3
 var _shake_timer := 0.0
 var _shake_intensity := 0.0
@@ -22,6 +23,22 @@ var _knockback_timer := 0.0
 func _ready() -> void:
 	camera_y = global_position.y
 	_camera_origin = _camera.position
+	ItemInventory.equipment_changed.connect(_on_equipment_changed)
+	_apply_skin()
+
+func _on_equipment_changed(slot: String, _id: String) -> void:
+	if slot == "skin":
+		_apply_skin()
+
+func _apply_skin() -> void:
+	var skin_id := ItemInventory.get_equipped("skin")
+	if skin_id.is_empty():
+		return
+	var item := ItemInventory.get_item(skin_id)
+	var col_arr = item.get("color", [1, 1, 1])
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(col_arr[0], col_arr[1], col_arr[2])
+	_body_mesh.set_surface_override_material(0, mat)
 
 func apply_knockback(force: Vector3) -> void:
 	velocity = force

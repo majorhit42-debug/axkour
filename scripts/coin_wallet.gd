@@ -21,6 +21,13 @@ func lose_random_coins() -> int:
 	coin_count_changed.emit(coins)
 	return loss
 
+func spend_coins(amount: int) -> bool:
+	if coins < amount:
+		return false
+	coins -= amount
+	coin_count_changed.emit(coins)
+	return true
+
 func reset() -> void:
 	coins = 0
 	coin_count_changed.emit(coins)

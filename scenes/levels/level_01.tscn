@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bha0ardtile01" path="res://scenes/hazard/hazard_tile.tscn" id="4_hazard_tile"]
 [ext_resource type="PackedScene" uid="uid://bredtilegrid1" path="res://scenes/hazard/red_tile_grid.tscn" id="5_red_tile_grid"]
 [ext_resource type="PackedScene" uid="uid://dcoin000001" path="res://scenes/coin/coin.tscn" id="6_coin"]
+[ext_resource type="PackedScene" uid="uid://bpedestal0001" path="res://scenes/shop/pedestal.tscn" id="7_pedestal"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
 
@@ -18,10 +19,10 @@ sky = SubResource("Sky_1")
 ambient_light_source = 3
 
 [sub_resource type="BoxMesh" id="BoxMesh_1"]
-size = Vector3(6, 0.5, 6)
+size = Vector3(14, 0.5, 10)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1"]
-size = Vector3(6, 0.5, 6)
+size = Vector3(14, 0.5, 10)
 
 [sub_resource type="BoxMesh" id="BoxMesh_2"]
 size = Vector3(5, 0.5, 5)
@@ -41,6 +42,15 @@ size = Vector3(8, 0.5, 4)
 [sub_resource type="BoxShape3D" id="BoxShape3D_4"]
 size = Vector3(8, 0.5, 4)
 
+[sub_resource type="BoxMesh" id="BoxMesh_gold"]
+size = Vector3(3, 0.5, 3)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gold"]
+albedo_color = Color(1, 0.85, 0.1, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gold"]
+size = Vector3(3, 0.5, 3)
+
 [sub_resource type="BoxMesh" id="BoxMesh_5"]
 size = Vector3(8, 0.5, 8)
 
@@ -49,15 +59,6 @@ albedo_color = Color(0.2, 0.9, 0.2, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5"]
 size = Vector3(8, 0.5, 8)
-
-[sub_resource type="BoxMesh" id="BoxMesh_gold"]
-size = Vector3(3, 0.5, 3)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_gold"]
-size = Vector3(3, 0.5, 3)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gold"]
-albedo_color = Color(1.0, 0.85, 0.1, 1)
 
 [node name="Level" type="Node3D" unique_id=1199313302]
 script = ExtResource("2_level_script")
@@ -261,69 +262,94 @@ shape = SubResource("BoxShape3D_gold")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1.9, 156)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="GoldPlatform2" unique_id=600000021]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.30353284, -1.1972537, -0.307724)
 mesh = SubResource("BoxMesh_gold")
 surface_material_override/0 = SubResource("StandardMaterial3D_gold")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="GoldPlatform2" unique_id=600000022]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.30353284, -1.1972537, -0.307724)
 shape = SubResource("BoxShape3D_gold")
 
 [node name="GoldPlatform3" type="StaticBody3D" parent="." unique_id=600000030]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.4, 163)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="GoldPlatform3" unique_id=600000031]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15988636, -0.107359886, -1.6636353)
 mesh = SubResource("BoxMesh_gold")
 surface_material_override/0 = SubResource("StandardMaterial3D_gold")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="GoldPlatform3" unique_id=600000032]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15988636, -0.107359886, -1.6636353)
 shape = SubResource("BoxShape3D_gold")
 
 [node name="GoldPlatform4" type="StaticBody3D" parent="." unique_id=600000040]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.9, 170)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="GoldPlatform4" unique_id=600000041]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7436838, -0.72975683, -2.9454498)
 mesh = SubResource("BoxMesh_gold")
 surface_material_override/0 = SubResource("StandardMaterial3D_gold")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="GoldPlatform4" unique_id=600000042]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7436838, -0.72975683, -2.9454498)
 shape = SubResource("BoxShape3D_gold")
 
 [node name="GoldPlatform5" type="StaticBody3D" parent="." unique_id=600000050]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.4, 177)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="GoldPlatform5" unique_id=600000051]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.20153236, -0.33670044, -4.1948547)
 mesh = SubResource("BoxMesh_gold")
 surface_material_override/0 = SubResource("StandardMaterial3D_gold")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="GoldPlatform5" unique_id=600000052]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.20153236, -0.33670044, -4.1948547)
 shape = SubResource("BoxShape3D_gold")
 
 [node name="GoldPlatform6" type="StaticBody3D" parent="." unique_id=600000060]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.5, 184)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="GoldPlatform6" unique_id=600000061]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.16111946, -0.27228785, -6.2677)
 mesh = SubResource("BoxMesh_gold")
 surface_material_override/0 = SubResource("StandardMaterial3D_gold")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="GoldPlatform6" unique_id=600000062]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.21870899, -0.2575345, -6.2677)
+shape = SubResource("BoxShape3D_gold")
+
+[node name="GoldPlatform7" type="StaticBody3D" parent="." unique_id=1175654575]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.5, 184)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="GoldPlatform7" unique_id=1251708504]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45072293, -0.74714637, -0.8845215)
+mesh = SubResource("BoxMesh_gold")
+surface_material_override/0 = SubResource("StandardMaterial3D_gold")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GoldPlatform7" unique_id=666402559]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.42920542, -0.7040584, -0.8063202)
 shape = SubResource("BoxShape3D_gold")
 
 [node name="Coin1" parent="." unique_id=600000071 instance=ExtResource("6_coin")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.4, 149)
 
 [node name="Coin2" parent="." unique_id=600000072 instance=ExtResource("6_coin")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 2.9, 156)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.6964672, 1.7027464, 155.69228)
 
 [node name="Coin3" parent="." unique_id=600000073 instance=ExtResource("6_coin")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.4, 163)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1598864, 1.2926401, 161.33636)
 
 [node name="Coin4" parent="." unique_id=600000074 instance=ExtResource("6_coin")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 2.9, 170)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2563162, 2.1702433, 167.05455)
 
 [node name="Coin5" parent="." unique_id=600000075 instance=ExtResource("6_coin")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 1.4, 177)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2015324, 1.0632995, 172.80515)
 
 [node name="Coin6" parent="." unique_id=600000076 instance=ExtResource("6_coin")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 2.5, 184)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.781291, 2.2424655, 177.7323)
+
+[node name="Coin8" parent="." unique_id=1950093919 instance=ExtResource("6_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.90339804, 1.7455456, 183.24461)
 
 [node name="FinishPlatform" type="StaticBody3D" parent="." unique_id=394244571]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.4, 192)
@@ -344,4 +370,41 @@ font_size = 64
 outline_size = 8
 
 [node name="PlayerStart" type="Marker3D" parent="." unique_id=1584761609]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0034207106, 3.9034362, -7.6293945e-06)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -3)
+
+[node name="StoreLabel" type="Label3D" parent="." unique_id=2001000001]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 1)
+pixel_size = 0.02
+billboard = 1
+outline_size = 12
+outline_modulate = Color(0, 0, 0, 1)
+modulate = Color(1.0, 0.85, 0.1, 1)
+text = "STORE"
+
+[node name="Pedestal_White" parent="." instance=ExtResource("7_pedestal") unique_id=2001000002]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 0.5, 1)
+item_id = "skin_white"
+
+[node name="Pedestal_Red" parent="." instance=ExtResource("7_pedestal") unique_id=2001000003]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0.5, 1)
+item_id = "skin_red"
+
+[node name="Pedestal_Blue" parent="." instance=ExtResource("7_pedestal") unique_id=2001000004]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 1)
+item_id = "skin_blue"
+
+[node name="Pedestal_Green" parent="." instance=ExtResource("7_pedestal") unique_id=2001000005]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0.5, 1)
+item_id = "skin_green"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=746995087]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08421421, 0.5014343, -7.5197296)
+mesh = SubResource("BoxMesh_gold")
+surface_material_override/0 = SubResource("StandardMaterial3D_gold")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=615816269]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08421421, 0.5014343, -7.5197296)
+shape = SubResource("BoxShape3D_gold")
+
+[node name="Coin7" parent="." unique_id=845632727 instance=ExtResource("6_coin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.781291, 2.2424655, 177.7323)

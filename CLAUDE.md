@@ -115,13 +115,21 @@ axkour/
 - **Do not add CanvasLayer as child of Player** — breaks mouse input routing on web; screen flash was removed for this reason
 
 ### Golden Zone: Coins, Wallet, HUD (prompt 06 — 2026-05-12)
-- `CoinWallet` autoload singleton (`scripts/coin_wallet.gd`) — global coin state with `add_coins()`, `lose_random_coins()`, and `coin_count_changed` signal
+- `CoinWallet` autoload singleton (`scripts/coin_wallet.gd`) — global coin state with `add_coins()`, `lose_random_coins()`, `spend_coins()`, and `coin_count_changed` signal
 - `Coin` scene (`scenes/coin/coin.tscn`) — `Area3D` with sphere collision; spins on Y axis; gold metallic material with emission glow; one-time collect (gone for the session after pickup)
 - `Sparkle` effect (`scenes/effects/sparkle.tscn`) — 15 gold `CPUParticles3D` particles, one-shot, auto-destructs after 1s
 - HUD (`scenes/ui/hud.tscn`) — `CanvasLayer` sibling in `main.tscn` (persists across level swaps); shows "Coins: N" top-right in gold with black outline, font size 32
 - Player respawn now calls `CoinWallet.lose_random_coins()` — random 1–3 coin penalty on death, clamped at 0
 - Golden zone in level_01: approach platform → 6 gold-tinted 3×3 platforms with 4–5 unit gaps, height variation (alternating Y=0.4/1.9), and lateral offsets — one coin above each platform
 - FinishPlatform moved to z=192 to make room for the golden zone
+
+### Shop: Pedestals, ItemInventory, Color Skins (prompt 07 — 2026-05-12)
+- `ItemInventory` autoload singleton (`scripts/item_inventory.gd`) — tracks owned/equipped items per slot; `try_purchase()`, `grant()`, `equip()` APIs; loads catalog from `assets/shop_items.json`
+- `assets/shop_items.json` — item catalog: White skin (free, owned by default), Red/Blue/Green skins (3 coins each)
+- `Pedestal` scene (`scenes/shop/pedestal.tscn`) — `StaticBody3D` with dark stand, runtime-colored display capsule, billboarded Label3D showing buy/equip/equipped state, `Area3D` proximity detection
+- Press **E** (or gamepad A) near a pedestal to buy (if you can afford it) or equip (if owned) — sparkle effect on purchase
+- Equipping a skin tints the player capsule immediately via `set_surface_override_material`
+- StartPlatform expanded to 14×10 for shop area; player spawns at back facing the 4 pedestals; gold "STORE" label floats above
 
 ---
 
@@ -181,16 +189,16 @@ Movement, quiz gates, Don't Touch Red, deployed to Vercel.
 - ~~Coin pickups with wallet singleton, HUD counter, lose 1–3 coins on fall~~ **Done — see Current Features**
 - Coins persist between deaths within a session (runtime only — no disk save yet)
 - Save wallet to disk (for cross-session persistence) — planned
-- Shop integration (spending coins) — planned
+- ~~Shop integration (spending coins)~~ **Done — `CoinWallet.spend_coins()` used by ItemInventory**
 
 ### Item Store
-- Located at the **start** of every level — also where the player respawns after dying
-- Buyable items (using collected coins):
-  - **Skins** — change the character's body color
-  - **Hats** — equippable on the head
-  - **Costumes** — full outfit swap
-  - **Balloons** — multiple colors; can be popped to hurt nearby characters' ears (offensive AOE)
+- ~~Shop framework: pedestals at spawn, ItemInventory autoload, E to buy/equip, 4 color skins~~ **Done — see Current Features**
+- Remaining buyable items (each needs its own prompt):
+  - **Hats** — equippable on the head (needs character model first)
+  - **Costumes** — full outfit swap (needs character model first)
+  - **Balloons** — multiple colors; can be popped to hurt nearby characters' ears (offensive AOE) — tied to combat system
   - **Magic carpet** — single-use, lets you skip a parkour section
+  - **Slap** — short-range push — tied to combat system
   - **Powerups** — TBD (jump boost? brief invincibility?)
 
 ### Character
