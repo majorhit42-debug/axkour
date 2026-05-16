@@ -150,6 +150,15 @@ axkour/
 - **CoinWallet** and **ItemInventory** autoloads persist across `change_scene_to_file` — coins and equipped items survive hub↔level transitions
 - `ResurrectionPodSpot` Marker3D placed at (10, 1, 0) in hub — visual pod added in prompt 09
 
+### Death Flow: You Died Screen + Resurrection Pod (prompt 09 — 2026-05-15)
+- **`GameState` autoload** (`scripts/game_state.gd`) — singleton with `respawning_from_death: bool`; persists across scene changes to signal hub whether to use the pod spawn path
+- **`DeathScreen` scene** (`scenes/ui/death_screen.tscn`) — `CanvasLayer` with dark-red 50% overlay + "YOU DIED" (font 96, bright red, fade-in 0.3s) + "Returning to hub..." subtitle; auto-advances to hub after 2s
+- **`ResurrectionPod` scene** (`scenes/hub/resurrection_pod.tscn`) — dark metallic base + translucent blue chamber + dome cap + `OmniLight3D`; instanced at (10, 0, 0) in hub; `ResurrectionPodSpot` marker at (10, 1, 0) is the player spawn point (inside the chamber)
+- **`die()` on player** — sets `is_dead = true`, calls `CoinWallet.lose_random_coins()`, sets `GameState.respawning_from_death = true`, instances death screen; `is_dead` suppresses all input and physics movement
+- **Unified death trigger** — all death paths (fall below Y=-20, hazard tile explosion knockback, wrong quiz platform knockback) funnel through the fall check in `_physics_process`, which calls `die()`; no changes needed in explosion or quiz_gate scripts
+- **Materialization effect in hub** — blue/white CPUParticles3D burst + pod light flash (1.5→6.0→1.5 energy tween) on arrival; player input locked for 0.5s post-materialization, then `unlock_input()` resets `is_dead`
+- **Fresh start path unaffected** — `GameState.respawning_from_death` defaults false; first spawn goes to `PlayerStart` (z=−10 in hub), not the pod
+
 ### Humanoid Character — X Bot (2026-05-15)
 - Mixamo X Bot FBX (`assets/models/x_bot.fbx`) replaces the white capsule visual; imported via `fbx/importer=0` (FBX2glTF) with `apply_root_scale=false` — the importer handles cm→m conversion internally
 - FBX scene tree: `Skeleton3D` (65 bones, `mixamorig_` prefix with underscores) → `Beta_Surface` + `Beta_Joints` MeshInstance3D nodes

@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://bhubscript001" path="res://scripts/hub.gd" id="2_hub_script"]
 [ext_resource type="Script" uid="uid://bportalscrt01" path="res://scripts/portal.gd" id="3_portal_script"]
 [ext_resource type="PackedScene" uid="uid://bpedestal0001" path="res://scenes/shop/pedestal.tscn" id="4_pedestal"]
+[ext_resource type="PackedScene" uid="uid://respod0001" path="res://scenes/hub/resurrection_pod.tscn" id="5_pod"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
 sky_top_color = Color(0.18, 0.38, 0.75, 1)
@@ -262,3 +263,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -10)
 
 [node name="ResurrectionPodSpot" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 1, 0)
+
+[node name="ResurrectionPod" parent="." instance=ExtResource("5_pod")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 0)

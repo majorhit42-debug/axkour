@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://deathscreen01"]
+
+[ext_resource type="Script" uid="uid://deathscript01" path="res://scripts/death_screen.gd" id="1_script"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_1"]
+font_size = 96
+font_color = Color(1.0, 0.1, 0.1, 1)
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_2"]
+font_size = 28
+font_color = Color(0.8, 0.8, 0.8, 1)
+
+[node name="DeathScreen" type="CanvasLayer"]
+script = ExtResource("1_script")
+
+[node name="Overlay" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.35, 0.0, 0.0, 0.5)
+mouse_filter = 2
+
+[node name="YouDiedLabel" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -80.0
+offset_right = 300.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "YOU DIED"
+label_settings = SubResource("LabelSettings_1")
+horizontal_alignment = 1
+
+[node name="SubtitleLabel" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = 20.0
+offset_right = 250.0
+offset_bottom = 65.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Returning to hub..."
+label_settings = SubResource("LabelSettings_2")
+horizontal_alignment = 1

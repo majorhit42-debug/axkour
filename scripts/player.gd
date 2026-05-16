@@ -9,8 +9,11 @@ const CAMERA_Y_DAMP = 2.5  # lower = more lag behind the player's jump
 const FLY_SPEED = 10.0
 const _CHEAT_CODE := "axelrules"
 
+const DEATH_SCREEN_SCENE := preload("res://scenes/ui/death_screen.tscn")
+
 var respawn_position: Vector3
 var camera_y: float
+var is_dead: bool = false
 var _cheat_buffer: String = ""
 var _debug_mode: bool = false
 var _fly_mode: bool = false
@@ -118,6 +121,20 @@ func _apply_skin() -> void:
 	mat.roughness = 0.7
 	_body_mesh.set_surface_override_material(0, mat)
 
+func die() -> void:
+	if is_dead:
+		return
+	is_dead = true
+	CoinWallet.lose_random_coins()
+	GameState.respawning_from_death = true
+	velocity = Vector3.ZERO
+	_knockback_timer = 0.0
+	var screen := DEATH_SCREEN_SCENE.instantiate()
+	get_tree().current_scene.add_child(screen)
+
+func unlock_input() -> void:
+	is_dead = false
+
 func apply_knockback(force: Vector3) -> void:
 	velocity = force
 	_knockback_timer = 5.0
@@ -141,6 +158,8 @@ func _process(delta: float) -> void:
 		_camera.position = _camera_origin
 
 func _unhandled_input(event: InputEvent) -> void:
+	if is_dead:
+		return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -179,6 +198,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			CoinWallet.add_coins(1)
 
 func _physics_process(delta: float) -> void:
+	if is_dead:
+		return
 	if _fly_mode:
 		var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 		var cam_basis := camera_pivot.global_transform.basis
@@ -237,11 +258,7 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 
 	if not _fly_mode and global_position.y < RESPAWN_Y:
-		CoinWallet.lose_random_coins()
-		global_position = respawn_position
-		camera_y = respawn_position.y
-		velocity = Vector3.ZERO
-		_knockback_timer = 0.0
+		die()
 
 	camera_y = lerp(camera_y, global_position.y, CAMERA_Y_DAMP * delta)
 	camera_pivot.global_position.y = camera_y
