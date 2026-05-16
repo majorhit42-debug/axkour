@@ -67,7 +67,7 @@ axkour/
 ### Bootstrap (prompt 01 — 2026-05-09)
 - Godot 4 project configured with Compatibility renderer (GL ES 3.0 / WebGL 2.0)
 - Input map: WASD movement, Space jump, LMB slap (registered only), Escape release mouse
-- 3rd-person humanoid character (`CharacterBody3D`) — white capsule placeholder
+- 3rd-person humanoid character (`CharacterBody3D`) — originally a white capsule placeholder, now Mixamo X Bot (see Humanoid Character section)
 - Spring-arm camera: mouse yaw/pitch, vertical pitch clamped ±80°, Escape toggles mouse capture
 - Physics movement: camera-relative WASD, jump, gravity
 - Fall respawn: player respawns at level start when Y < −20
@@ -128,15 +128,23 @@ axkour/
 - `assets/shop_items.json` — item catalog: White skin (free, owned by default), Red/Blue/Green skins (3 coins each)
 - `Pedestal` scene (`scenes/shop/pedestal.tscn`) — `StaticBody3D` with dark stand, runtime-built display item, billboarded Label3D (hidden until player is within 1.5 units), `Area3D` proximity detection
 - Press **E** (or gamepad A) near a pedestal to buy (if you can afford it) or equip (if owned) — sparkle effect on purchase
-- Equipping a skin tints the player capsule immediately via `set_surface_override_material`
+- Equipping a skin tints the player body mesh immediately via `set_surface_override_material`
 - StartPlatform expanded to 14×10 for shop area; player spawns at back (z=−3) facing two rows of pedestals; gold "STORE" label floats above
 
 ### Hats + Label Proximity (2026-05-12)
 - `HatBuilder` static class (`scripts/hat_builder.gd`) — generates hat geometry (CylinderMesh parts) by `hat_type`; called by both Pedestal and Player so display and worn hat always match
 - 3 hat items in `shop_items.json`: Top Hat (5 coins, black, brim + tall crown), Party Hat (3 coins, magenta, cone), Cowboy Hat (4 coins, brown, wide brim + short crown)
-- `HatMount` Node3D added to `player.tscn` at local y=1.3 (capsule top); `_apply_hat()` clears old children and adds new mesh nodes on equip
+- `HatMount` is a `BoneAttachment3D` added at runtime to the `mixamorig:Head` bone of the X Bot skeleton; hats follow the head automatically
 - Hat pedestal row at z=−1 (between spawn and skin row): Top Hat, Party Hat, Cowboy Hat at x=−3/0/3
 - Pedestal labels are hidden by default and only appear when the player enters the interact sphere — no text clutter from a distance
+
+### Humanoid Character — X Bot (2026-05-15)
+- Mixamo X Bot FBX (`assets/models/x_bot.fbx`) replaces the white capsule visual; import settings: root_scale=0.01, animations off
+- `CharacterMesh` node in `player.tscn` instances the FBX; positioned at y=−0.9 so feet align with the bottom of the CapsuleShape3D (radius 0.35, height 1.8)
+- White default: `_apply_skin()` always applies a StandardMaterial3D override so the character loads white regardless of the FBX's embedded material; skin tinting now targets the discovered MeshInstance3D inside CharacterMesh
+- `_setup_body_mesh()` and `_setup_hat_mount()` use `_find_first_mesh()` / `_find_skeleton()` tree-walkers — no hardcoded node paths inside the FBX scene
+- `HatMount` (`BoneAttachment3D`) created in code: added as child of Skeleton3D, bone_name `mixamorig:Head`, y-offset 0.18 so hats sit on top of the head
+- Character mesh rotates smoothly to face movement direction each frame via `lerp_angle` on Y axis
 
 ### Debug Mode (2026-05-12)
 - Type **axelrules** anywhere to toggle debug mode on/off (sliding buffer of last 9 keys, no Enter needed)

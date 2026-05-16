@@ -18,8 +18,9 @@ var _fly_mode: bool = false
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var spring_arm: SpringArm3D = $CameraPivot/SpringArm3D
 @onready var _camera: Camera3D = $CameraPivot/SpringArm3D/Camera3D
-@onready var _body_mesh: MeshInstance3D = $Mesh
-@onready var _hat_mount: Node3D = $HatMount
+var _body_mesh: MeshInstance3D
+var _hat_mount: Node3D
+var _character_mesh: Node3D
 var _camera_origin: Vector3
 var _shake_timer := 0.0
 var _shake_intensity := 0.0
@@ -29,9 +30,47 @@ var _knockback_timer := 0.0
 func _ready() -> void:
 	camera_y = global_position.y
 	_camera_origin = _camera.position
+	_character_mesh = $CharacterMesh
+	_setup_body_mesh()
+	_setup_hat_mount()
 	ItemInventory.equipment_changed.connect(_on_equipment_changed)
 	_apply_skin()
 	_apply_hat()
+
+func _setup_body_mesh() -> void:
+	_body_mesh = _find_first_mesh(_character_mesh)
+	if not _body_mesh:
+		push_warning("Player: MeshInstance3D not found in CharacterMesh")
+
+func _setup_hat_mount() -> void:
+	var skeleton := _find_skeleton(_character_mesh)
+	if not skeleton:
+		push_warning("Player: Skeleton3D not found in CharacterMesh")
+		return
+	var bone_attach := BoneAttachment3D.new()
+	bone_attach.name = "HatMount"
+	skeleton.add_child(bone_attach)
+	bone_attach.bone_name = "mixamorig:Head"
+	bone_attach.position.y = 0.18
+	_hat_mount = bone_attach
+
+func _find_first_mesh(node: Node) -> MeshInstance3D:
+	if node is MeshInstance3D:
+		return node
+	for child in node.get_children():
+		var found := _find_first_mesh(child)
+		if found:
+			return found
+	return null
+
+func _find_skeleton(node: Node) -> Skeleton3D:
+	if node is Skeleton3D:
+		return node
+	for child in node.get_children():
+		var found := _find_skeleton(child)
+		if found:
+			return found
+	return null
 
 func _on_equipment_changed(slot: String, _id: String) -> void:
 	if slot == "skin":
@@ -40,6 +79,8 @@ func _on_equipment_changed(slot: String, _id: String) -> void:
 		_apply_hat()
 
 func _apply_hat() -> void:
+	if not _hat_mount:
+		return
 	for child in _hat_mount.get_children():
 		child.queue_free()
 	var hat_id := ItemInventory.get_equipped("hat")
@@ -52,13 +93,17 @@ func _apply_hat() -> void:
 		_hat_mount.add_child(mi)
 
 func _apply_skin() -> void:
-	var skin_id := ItemInventory.get_equipped("skin")
-	if skin_id.is_empty():
+	if not _body_mesh:
 		return
-	var item := ItemInventory.get_item(skin_id)
-	var col_arr = item.get("color", [1, 1, 1])
+	var col := Color(1, 1, 1)
+	var skin_id := ItemInventory.get_equipped("skin")
+	if not skin_id.is_empty():
+		var item := ItemInventory.get_item(skin_id)
+		var col_arr = item.get("color", [1, 1, 1])
+		col = Color(col_arr[0], col_arr[1], col_arr[2])
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(col_arr[0], col_arr[1], col_arr[2])
+	mat.albedo_color = col
+	mat.roughness = 0.7
 	_body_mesh.set_surface_override_material(0, mat)
 
 func apply_knockback(force: Vector3) -> void:
@@ -171,6 +216,10 @@ func _physics_process(delta: float) -> void:
 
 		if Input.is_action_just_pressed("jump") and is_on_floor():
 			velocity.y = JUMP_VELOCITY
+
+		if _character_mesh and move_dir.length() > 0.01:
+			var target_angle := atan2(-move_dir.x, -move_dir.z)
+			_character_mesh.rotation.y = lerp_angle(_character_mesh.rotation.y, target_angle, 10.0 * delta)
 
 		move_and_slide()
 
