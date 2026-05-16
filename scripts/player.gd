@@ -50,7 +50,13 @@ func _setup_hat_mount() -> void:
 	var bone_attach := BoneAttachment3D.new()
 	bone_attach.name = "HatMount"
 	skeleton.add_child(bone_attach)
-	bone_attach.bone_name = "mixamorig:Head"
+	# Godot replaces ':' with '_' in bone names; try both variants
+	for candidate in ["mixamorig_Head", "mixamorig:Head", "Head"]:
+		if skeleton.find_bone(candidate) != -1:
+			bone_attach.bone_name = candidate
+			break
+	if bone_attach.bone_name.is_empty():
+		push_warning("Player: head bone not found — hat will not follow head")
 	bone_attach.position.y = 0.18
 	_hat_mount = bone_attach
 
