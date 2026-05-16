@@ -138,6 +138,18 @@ axkour/
 - Hat pedestal row at z=−1 (between spawn and skin row): Top Hat, Party Hat, Cowboy Hat at x=−3/0/3
 - Pedestal labels are hidden by default and only appear when the player enters the interact sphere — no text clutter from a distance
 
+### Hub Plaza + Shop Migration (prompt 08 — 2026-05-15)
+- **Hub scene** (`scenes/hub/hub.tscn`) is now the game's entry scene — `main.tscn` loads hub instead of level_01
+- Hub has a warm procedural sky, sandy ground (60×60), and a raised stone **ShopPavilion** (16×16 platform, 4 corner pillars, overhanging roof) at world center
+- All skin and hat **pedestals migrated** from level_01 into the ShopPavilion — same layout, same behavior
+- **Level01Portal** at z=20: stone archway (two pillars + lintel) with a glowing blue rectangle inside; walking in calls `change_scene_to_file("res://scenes/levels/level_01.tscn")`
+- **ReturnToHubPortal** on level_01's FinishPlatform (at z=197): smaller orange archway with "RETURN TO HUB" label; walking in calls `change_scene_to_file("res://scenes/hub/hub.tscn")`
+- Portal logic in `scripts/portal.gd` (Area3D, `@export target_scene`); hub player spawning in `scripts/hub.gd`
+- `PlayerStart` in level_01 moved from z=−3 to z=0 so it lands on the new 4×4 start platform
+- level_01's StartPlatform reverted to plain 4×4 (was 14×10); shop nodes and decorations stripped
+- **CoinWallet** and **ItemInventory** autoloads persist across `change_scene_to_file` — coins and equipped items survive hub↔level transitions
+- `ResurrectionPodSpot` Marker3D placed at (10, 1, 0) in hub — visual pod added in prompt 09
+
 ### Humanoid Character — X Bot (2026-05-15)
 - Mixamo X Bot FBX (`assets/models/x_bot.fbx`) replaces the white capsule visual; imported via `fbx/importer=0` (FBX2glTF) with `apply_root_scale=false` — the importer handles cm→m conversion internally
 - FBX scene tree: `Skeleton3D` (65 bones, `mixamorig_` prefix with underscores) → `Beta_Surface` + `Beta_Joints` MeshInstance3D nodes

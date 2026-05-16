@@ -1,0 +1,264 @@
+[gd_scene format=3 uid="uid://bhubscene0001"]
+
+[ext_resource type="PackedScene" uid="uid://bplayerscene1" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="Script" uid="uid://bhubscript001" path="res://scripts/hub.gd" id="2_hub_script"]
+[ext_resource type="Script" uid="uid://bportalscrt01" path="res://scripts/portal.gd" id="3_portal_script"]
+[ext_resource type="PackedScene" uid="uid://bpedestal0001" path="res://scenes/shop/pedestal.tscn" id="4_pedestal"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
+sky_top_color = Color(0.18, 0.38, 0.75, 1)
+sky_horizon_color = Color(0.92, 0.72, 0.42, 1)
+ground_horizon_color = Color(0.72, 0.58, 0.35, 1)
+ground_bottom_color = Color(0.5, 0.4, 0.25, 1)
+
+[sub_resource type="Sky" id="Sky_1"]
+sky_material = SubResource("ProceduralSkyMaterial_1")
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 2
+sky = SubResource("Sky_1")
+ambient_light_source = 3
+ambient_light_color = Color(1, 0.9, 0.75, 1)
+ambient_light_energy = 0.4
+
+[sub_resource type="BoxMesh" id="BoxMesh_ground"]
+size = Vector3(60, 0.5, 60)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground"]
+albedo_color = Color(0.62, 0.58, 0.48, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
+size = Vector3(60, 0.5, 60)
+
+[sub_resource type="BoxMesh" id="BoxMesh_pav_floor"]
+size = Vector3(16, 0.5, 16)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pav_floor"]
+albedo_color = Color(0.78, 0.74, 0.65, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pav_floor"]
+size = Vector3(16, 0.5, 16)
+
+[sub_resource type="BoxMesh" id="BoxMesh_pillar"]
+size = Vector3(1, 4, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pillar"]
+albedo_color = Color(0.3, 0.27, 0.22, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pillar"]
+size = Vector3(1, 4, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_roof"]
+size = Vector3(18, 0.5, 18)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_roof"]
+size = Vector3(18, 0.5, 18)
+
+[sub_resource type="BoxMesh" id="BoxMesh_portal_pillar"]
+size = Vector3(1, 4, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_portal_pillar"]
+size = Vector3(1, 4, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_lintel"]
+size = Vector3(7, 0.5, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lintel"]
+size = Vector3(7, 0.5, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_glow"]
+size = Vector3(4, 3.5, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_glow"]
+albedo_color = Color(0.3, 0.5, 1.0, 0.85)
+emission_enabled = true
+emission = Color(0.3, 0.5, 1.0, 1)
+emission_energy_multiplier = 2.0
+transparency = 1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_portal_area"]
+size = Vector3(4, 3.5, 1.5)
+
+[node name="Hub" type="Node3D"]
+script = ExtResource("2_hub_script")
+player_scene = ExtResource("1_player")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 0, 8, 0)
+light_color = Color(1, 0.95, 0.85, 1)
+light_energy = 1.2
+
+[node name="Ground" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+mesh = SubResource("BoxMesh_ground")
+surface_material_override/0 = SubResource("StandardMaterial3D_ground")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("BoxShape3D_ground")
+
+[node name="ShopPavilion" type="Node3D" parent="."]
+
+[node name="Floor" type="StaticBody3D" parent="ShopPavilion"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ShopPavilion/Floor"]
+mesh = SubResource("BoxMesh_pav_floor")
+surface_material_override/0 = SubResource("StandardMaterial3D_pav_floor")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ShopPavilion/Floor"]
+shape = SubResource("BoxShape3D_pav_floor")
+
+[node name="Pillar_SW" type="StaticBody3D" parent="ShopPavilion"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 2.25, 7)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ShopPavilion/Pillar_SW"]
+mesh = SubResource("BoxMesh_pillar")
+surface_material_override/0 = SubResource("StandardMaterial3D_pillar")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ShopPavilion/Pillar_SW"]
+shape = SubResource("BoxShape3D_pillar")
+
+[node name="Pillar_SE" type="StaticBody3D" parent="ShopPavilion"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.25, 7)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ShopPavilion/Pillar_SE"]
+mesh = SubResource("BoxMesh_pillar")
+surface_material_override/0 = SubResource("StandardMaterial3D_pillar")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ShopPavilion/Pillar_SE"]
+shape = SubResource("BoxShape3D_pillar")
+
+[node name="Pillar_NW" type="StaticBody3D" parent="ShopPavilion"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 2.25, -7)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ShopPavilion/Pillar_NW"]
+mesh = SubResource("BoxMesh_pillar")
+surface_material_override/0 = SubResource("StandardMaterial3D_pillar")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ShopPavilion/Pillar_NW"]
+shape = SubResource("BoxShape3D_pillar")
+
+[node name="Pillar_NE" type="StaticBody3D" parent="ShopPavilion"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.25, -7)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ShopPavilion/Pillar_NE"]
+mesh = SubResource("BoxMesh_pillar")
+surface_material_override/0 = SubResource("StandardMaterial3D_pillar")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ShopPavilion/Pillar_NE"]
+shape = SubResource("BoxShape3D_pillar")
+
+[node name="Roof" type="StaticBody3D" parent="ShopPavilion"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ShopPavilion/Roof"]
+mesh = SubResource("BoxMesh_roof")
+surface_material_override/0 = SubResource("StandardMaterial3D_pillar")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ShopPavilion/Roof"]
+shape = SubResource("BoxShape3D_roof")
+
+[node name="StoreLabel" type="Label3D" parent="ShopPavilion"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+pixel_size = 0.02
+billboard = 1
+outline_size = 12
+outline_modulate = Color(0, 0, 0, 1)
+modulate = Color(1.0, 0.85, 0.1, 1)
+text = "STORE"
+font_size = 64
+
+[node name="Pedestal_White" parent="ShopPavilion" instance=ExtResource("4_pedestal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 0.5, 2)
+item_id = "skin_white"
+
+[node name="Pedestal_Red" parent="ShopPavilion" instance=ExtResource("4_pedestal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0.5, 2)
+item_id = "skin_red"
+
+[node name="Pedestal_Blue" parent="ShopPavilion" instance=ExtResource("4_pedestal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 2)
+item_id = "skin_blue"
+
+[node name="Pedestal_Green" parent="ShopPavilion" instance=ExtResource("4_pedestal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0.5, 2)
+item_id = "skin_green"
+
+[node name="Pedestal_TopHat" parent="ShopPavilion" instance=ExtResource("4_pedestal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.5, 0)
+item_id = "hat_tophat"
+
+[node name="Pedestal_PartyHat" parent="ShopPavilion" instance=ExtResource("4_pedestal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+item_id = "hat_party"
+
+[node name="Pedestal_CowboyHat" parent="ShopPavilion" instance=ExtResource("4_pedestal")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.5, 0)
+item_id = "hat_cowboy"
+
+[node name="LevelPortals" type="Node3D" parent="."]
+
+[node name="Level01Portal" type="Node3D" parent="LevelPortals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
+
+[node name="PillarLeft" type="StaticBody3D" parent="LevelPortals/Level01Portal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 2, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelPortals/Level01Portal/PillarLeft"]
+mesh = SubResource("BoxMesh_portal_pillar")
+surface_material_override/0 = SubResource("StandardMaterial3D_pillar")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelPortals/Level01Portal/PillarLeft"]
+shape = SubResource("BoxShape3D_portal_pillar")
+
+[node name="PillarRight" type="StaticBody3D" parent="LevelPortals/Level01Portal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 2, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelPortals/Level01Portal/PillarRight"]
+mesh = SubResource("BoxMesh_portal_pillar")
+surface_material_override/0 = SubResource("StandardMaterial3D_pillar")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelPortals/Level01Portal/PillarRight"]
+shape = SubResource("BoxShape3D_portal_pillar")
+
+[node name="Lintel" type="StaticBody3D" parent="LevelPortals/Level01Portal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.25, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelPortals/Level01Portal/Lintel"]
+mesh = SubResource("BoxMesh_lintel")
+surface_material_override/0 = SubResource("StandardMaterial3D_pillar")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelPortals/Level01Portal/Lintel"]
+shape = SubResource("BoxShape3D_lintel")
+
+[node name="GlowPlane" type="MeshInstance3D" parent="LevelPortals/Level01Portal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+mesh = SubResource("BoxMesh_glow")
+surface_material_override/0 = SubResource("StandardMaterial3D_glow")
+
+[node name="PortalLabel" type="Label3D" parent="LevelPortals/Level01Portal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.2, 0)
+pixel_size = 0.02
+billboard = 1
+outline_size = 8
+outline_modulate = Color(0, 0, 0, 1)
+text = "LEVEL 01"
+font_size = 48
+
+[node name="PortalArea" type="Area3D" parent="LevelPortals/Level01Portal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+script = ExtResource("3_portal_script")
+target_scene = "res://scenes/levels/level_01.tscn"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelPortals/Level01Portal/PortalArea"]
+shape = SubResource("BoxShape3D_portal_area")
+
+[node name="PlayerStart" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -10)
+
+[node name="ResurrectionPodSpot" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 1, 0)

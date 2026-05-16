@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bha0ardtile01" path="res://scenes/hazard/hazard_tile.tscn" id="4_hazard_tile"]
 [ext_resource type="PackedScene" uid="uid://bredtilegrid1" path="res://scenes/hazard/red_tile_grid.tscn" id="5_red_tile_grid"]
 [ext_resource type="PackedScene" uid="uid://dcoin000001" path="res://scenes/coin/coin.tscn" id="6_coin"]
-[ext_resource type="PackedScene" uid="uid://bpedestal0001" path="res://scenes/shop/pedestal.tscn" id="7_pedestal"]
+[ext_resource type="Script" uid="uid://bportalscrt01" path="res://scripts/portal.gd" id="8_portal_script"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
 
@@ -19,10 +19,10 @@ sky = SubResource("Sky_1")
 ambient_light_source = 3
 
 [sub_resource type="BoxMesh" id="BoxMesh_1"]
-size = Vector3(14, 0.5, 10)
+size = Vector3(4, 0.5, 4)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1"]
-size = Vector3(14, 0.5, 10)
+size = Vector3(4, 0.5, 4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_2"]
 size = Vector3(5, 0.5, 5)
@@ -60,6 +60,34 @@ albedo_color = Color(0.2, 0.9, 0.2, 1)
 [sub_resource type="BoxShape3D" id="BoxShape3D_5"]
 size = Vector3(8, 0.5, 8)
 
+[sub_resource type="BoxMesh" id="BoxMesh_retpillar"]
+size = Vector3(0.8, 4, 0.8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_retpillar"]
+size = Vector3(0.8, 4, 0.8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_retlintel"]
+size = Vector3(5, 0.5, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_retlintel"]
+size = Vector3(5, 0.5, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_retglow"]
+size = Vector3(3, 3.5, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_retglow"]
+albedo_color = Color(1.0, 0.6, 0.1, 0.85)
+emission_enabled = true
+emission = Color(1.0, 0.55, 0.05, 1)
+emission_energy_multiplier = 2.0
+transparency = 1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_retarea"]
+size = Vector3(3, 3.5, 1.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_retpillar"]
+albedo_color = Color(0.3, 0.27, 0.22, 1)
+
 [node name="Level" type="Node3D" unique_id=1199313302]
 script = ExtResource("2_level_script")
 player_scene = ExtResource("1_player")
@@ -73,7 +101,6 @@ transform = Transform3D(0.86602527, -0.3535535, 0.35355362, 0, 0.7071069, 0.7071
 [node name="StartPlatform" type="StaticBody3D" parent="." unique_id=1531665427]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="StartPlatform" unique_id=647307504]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.02396965, 0.06768298, 0.010960579)
 mesh = SubResource("BoxMesh_1")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StartPlatform" unique_id=2080954348]
@@ -369,54 +396,62 @@ text = "FINISH!"
 font_size = 64
 outline_size = 8
 
-[node name="PlayerStart" type="Marker3D" parent="." unique_id=1584761609]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -3)
+[node name="ReturnToHubPortal" type="Node3D" parent="." unique_id=900000001]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 197)
 
-[node name="StoreLabel" type="Label3D" parent="." unique_id=2001000001]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 1)
+[node name="PillarLeft" type="StaticBody3D" parent="ReturnToHubPortal" unique_id=900000002]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9, 2, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ReturnToHubPortal/PillarLeft" unique_id=900000003]
+mesh = SubResource("BoxMesh_retpillar")
+surface_material_override/0 = SubResource("StandardMaterial3D_retpillar")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ReturnToHubPortal/PillarLeft" unique_id=900000004]
+shape = SubResource("BoxShape3D_retpillar")
+
+[node name="PillarRight" type="StaticBody3D" parent="ReturnToHubPortal" unique_id=900000005]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.9, 2, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ReturnToHubPortal/PillarRight" unique_id=900000006]
+mesh = SubResource("BoxMesh_retpillar")
+surface_material_override/0 = SubResource("StandardMaterial3D_retpillar")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ReturnToHubPortal/PillarRight" unique_id=900000007]
+shape = SubResource("BoxShape3D_retpillar")
+
+[node name="Lintel" type="StaticBody3D" parent="ReturnToHubPortal" unique_id=900000008]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.25, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ReturnToHubPortal/Lintel" unique_id=900000009]
+mesh = SubResource("BoxMesh_retlintel")
+surface_material_override/0 = SubResource("StandardMaterial3D_retpillar")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ReturnToHubPortal/Lintel" unique_id=900000010]
+shape = SubResource("BoxShape3D_retlintel")
+
+[node name="GlowPlane" type="MeshInstance3D" parent="ReturnToHubPortal" unique_id=900000011]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+mesh = SubResource("BoxMesh_retglow")
+surface_material_override/0 = SubResource("StandardMaterial3D_retglow")
+
+[node name="ReturnLabel" type="Label3D" parent="ReturnToHubPortal" unique_id=900000012]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.2, 0)
 pixel_size = 0.02
 billboard = 1
-outline_size = 12
+outline_size = 8
 outline_modulate = Color(0, 0, 0, 1)
-modulate = Color(1.0, 0.85, 0.1, 1)
-text = "STORE"
+modulate = Color(1.0, 0.85, 0.3, 1)
+text = "RETURN TO HUB"
+font_size = 40
 
-[node name="Pedestal_White" parent="." instance=ExtResource("7_pedestal") unique_id=2001000002]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 0.5, 1)
-item_id = "skin_white"
+[node name="PortalArea" type="Area3D" parent="ReturnToHubPortal" unique_id=900000013]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+script = ExtResource("8_portal_script")
+target_scene = "res://scenes/hub/hub.tscn"
 
-[node name="Pedestal_Red" parent="." instance=ExtResource("7_pedestal") unique_id=2001000003]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0.5, 1)
-item_id = "skin_red"
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ReturnToHubPortal/PortalArea" unique_id=900000014]
+shape = SubResource("BoxShape3D_retarea")
 
-[node name="Pedestal_Blue" parent="." instance=ExtResource("7_pedestal") unique_id=2001000004]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.5, 1)
-item_id = "skin_blue"
+[node name="PlayerStart" type="Marker3D" parent="." unique_id=1584761609]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
-[node name="Pedestal_Green" parent="." instance=ExtResource("7_pedestal") unique_id=2001000005]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0.5, 1)
-item_id = "skin_green"
-
-[node name="Pedestal_TopHat" parent="." instance=ExtResource("7_pedestal") unique_id=2001000006]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.5, -1)
-item_id = "hat_tophat"
-
-[node name="Pedestal_PartyHat" parent="." instance=ExtResource("7_pedestal") unique_id=2001000007]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -1)
-item_id = "hat_party"
-
-[node name="Pedestal_CowboyHat" parent="." instance=ExtResource("7_pedestal") unique_id=2001000008]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.5, -1)
-item_id = "hat_cowboy"
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=746995087]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08421421, 0.5014343, -7.5197296)
-mesh = SubResource("BoxMesh_gold")
-surface_material_override/0 = SubResource("StandardMaterial3D_gold")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=615816269]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08421421, 0.5014343, -7.5197296)
-shape = SubResource("BoxShape3D_gold")
-
-[node name="Coin7" parent="." unique_id=845632727 instance=ExtResource("6_coin")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.781291, 2.2424655, 177.7323)

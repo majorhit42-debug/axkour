@@ -1,11 +1,10 @@
 [gd_scene format=3 uid="uid://bmainscene001"]
 
-[ext_resource type="PackedScene" uid="uid://blevel01scn1" path="res://scenes/levels/level_01.tscn" id="1_level01"]
+[ext_resource type="PackedScene" uid="uid://bhubscene0001" path="res://scenes/hub/hub.tscn" id="1_hub"]
 [ext_resource type="PackedScene" uid="uid://dhudscene01" path="res://scenes/ui/hud.tscn" id="2_hud"]
 
 [node name="Main" type="Node" unique_id=210704951]
 
-[node name="Level01" parent="." unique_id=1839583928 instance=ExtResource("1_level01")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4526844, -0.20301807, -0.4330516)
+[node name="Hub" parent="." unique_id=1839583928 instance=ExtResource("1_hub")]
 
 [node name="HUD" parent="." instance=ExtResource("2_hud")]
