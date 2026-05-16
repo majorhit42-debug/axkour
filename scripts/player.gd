@@ -47,18 +47,24 @@ func _setup_hat_mount() -> void:
 	if not skeleton:
 		push_warning("Player: Skeleton3D not found in CharacterMesh")
 		return
+	# Resolve head bone index directly; Godot converts ':' to '_' on FBX import
+	var head_idx := skeleton.find_bone("mixamorig_Head")
+	if head_idx < 0:
+		head_idx = skeleton.find_bone("mixamorig:Head")
+	if head_idx < 0:
+		push_warning("Player: head bone not found (bone count: %d)" % skeleton.get_bone_count())
+		return
+	# BoneAttachment3D's own transform is overridden by the bone every frame,
+	# so the y-offset lives on a child node instead.
 	var bone_attach := BoneAttachment3D.new()
-	bone_attach.name = "HatMount"
+	bone_attach.name = "HatBoneAttach"
+	bone_attach.bone_idx = head_idx
 	skeleton.add_child(bone_attach)
-	# Godot replaces ':' with '_' in bone names; try both variants
-	for candidate in ["mixamorig_Head", "mixamorig:Head", "Head"]:
-		if skeleton.find_bone(candidate) != -1:
-			bone_attach.bone_name = candidate
-			break
-	if bone_attach.bone_name.is_empty():
-		push_warning("Player: head bone not found — hat will not follow head")
-	bone_attach.position.y = 0.18
-	_hat_mount = bone_attach
+	var hat_offset := Node3D.new()
+	hat_offset.name = "HatMount"
+	hat_offset.position.y = 0.18
+	bone_attach.add_child(hat_offset)
+	_hat_mount = hat_offset
 
 func _find_first_mesh(node: Node) -> MeshInstance3D:
 	if node is MeshInstance3D:
@@ -224,7 +230,8 @@ func _physics_process(delta: float) -> void:
 			velocity.y = JUMP_VELOCITY
 
 		if _character_mesh and move_dir.length() > 0.01:
-			var target_angle := atan2(-move_dir.x, -move_dir.z)
+			# X Bot faces +Z after FBX2glTF import, so use +move_dir components
+			var target_angle := atan2(move_dir.x, move_dir.z)
 			_character_mesh.rotation.y = lerp_angle(_character_mesh.rotation.y, target_angle, 10.0 * delta)
 
 		move_and_slide()
