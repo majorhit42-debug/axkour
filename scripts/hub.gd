@@ -46,6 +46,6 @@ func _spawn_pod_burst(pos: Vector3) -> void:
 	particles.scale_amount_min = 0.08
 	particles.scale_amount_max = 0.12
 	particles.color = Color(0.6, 0.9, 1.0, 1.0)
-	particles.draw_pass_1 = SphereMesh.new()
+	particles.mesh = SphereMesh.new()
 	particles.emitting = true
 	get_tree().create_timer(1.5).timeout.connect(particles.queue_free)
