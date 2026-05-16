@@ -134,17 +134,18 @@ axkour/
 ### Hats + Label Proximity (2026-05-12)
 - `HatBuilder` static class (`scripts/hat_builder.gd`) — generates hat geometry (CylinderMesh parts) by `hat_type`; called by both Pedestal and Player so display and worn hat always match
 - 3 hat items in `shop_items.json`: Top Hat (5 coins, black, brim + tall crown), Party Hat (3 coins, magenta, cone), Cowboy Hat (4 coins, brown, wide brim + short crown)
-- `HatMount` is a `BoneAttachment3D` added at runtime to the `mixamorig:Head` bone of the X Bot skeleton; hats follow the head automatically
+- Hat mount: `BoneAttachment3D` (bone_idx=5, `mixamorig_Head`) with a child `Node3D` at y=0.18 as the actual `HatMount` — offset on child because skeleton overrides the BoneAttachment3D's own transform each frame
 - Hat pedestal row at z=−1 (between spawn and skin row): Top Hat, Party Hat, Cowboy Hat at x=−3/0/3
 - Pedestal labels are hidden by default and only appear when the player enters the interact sphere — no text clutter from a distance
 
 ### Humanoid Character — X Bot (2026-05-15)
-- Mixamo X Bot FBX (`assets/models/x_bot.fbx`) replaces the white capsule visual; import settings: root_scale=0.01, animations off
-- `CharacterMesh` node in `player.tscn` instances the FBX; positioned at y=−0.9 so feet align with the bottom of the CapsuleShape3D (radius 0.35, height 1.8)
-- White default: `_apply_skin()` always applies a StandardMaterial3D override so the character loads white regardless of the FBX's embedded material; skin tinting now targets the discovered MeshInstance3D inside CharacterMesh
-- `_setup_body_mesh()` and `_setup_hat_mount()` use `_find_first_mesh()` / `_find_skeleton()` tree-walkers — no hardcoded node paths inside the FBX scene
-- `HatMount` (`BoneAttachment3D`) created in code: added as child of Skeleton3D, bone_name `mixamorig:Head`, y-offset 0.18 so hats sit on top of the head
-- Character mesh rotates smoothly to face movement direction each frame via `lerp_angle` on Y axis
+- Mixamo X Bot FBX (`assets/models/x_bot.fbx`) replaces the white capsule visual; imported via `fbx/importer=0` (FBX2glTF) with `apply_root_scale=false` — the importer handles cm→m conversion internally
+- FBX scene tree: `Skeleton3D` (65 bones, `mixamorig_` prefix with underscores) → `Beta_Surface` + `Beta_Joints` MeshInstance3D nodes
+- `CharacterMesh` node in `player.tscn` instances the FBX at y=−0.9; collision capsule thinned to radius 0.35, height 1.8
+- White default: `_apply_skin()` always applies a StandardMaterial3D override (targets `Beta_Surface`, first mesh found via `_find_first_mesh()`); skin tinting works the same way
+- `_setup_body_mesh()` and `_setup_hat_mount()` use `_find_first_mesh()` / `_find_skeleton()` tree-walkers — no hardcoded paths into the FBX scene
+- Hat mount: bone_idx set directly to 5 (`mixamorig_Head`); y=0.18 offset on child Node3D (not BoneAttachment3D itself, whose transform the skeleton overrides)
+- X Bot faces +Z after FBX2glTF import; facing uses `atan2(move_dir.x, move_dir.z)` to align the +Z front with movement direction
 
 ### Debug Mode (2026-05-12)
 - Type **axelrules** anywhere to toggle debug mode on/off (sliding buffer of last 9 keys, no Enter needed)
