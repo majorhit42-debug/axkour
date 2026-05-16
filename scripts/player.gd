@@ -318,6 +318,6 @@ func _throw_balloon(charge: float) -> void:
 		forward = forward.normalized()
 	var spawn_pos := global_position + Vector3(0, 1.0, 0) + forward * 0.7
 	var balloon := _spawn_balloon_at(spawn_pos)
-	var speed := lerp(4.0, 12.0, charge)
-	var throw_vec := (forward + Vector3.UP * 0.4) * speed
+	var speed: float = lerp(4.0, 12.0, charge)
+	var throw_vec: Vector3 = (forward + Vector3.UP * 0.4) * speed
 	balloon.apply_central_impulse(throw_vec * balloon.mass)
