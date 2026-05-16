@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://betgrid00001"]
+
+[ext_resource type="Script" path="res://scripts/electric_tile_grid.gd" id="1_etgrid_script"]
+
+[node name="ElectricTileGrid" type="Node3D"]
+script = ExtResource("1_etgrid_script")

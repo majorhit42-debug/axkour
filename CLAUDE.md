@@ -168,6 +168,17 @@ axkour/
 - Hat mount: bone_idx set directly to 5 (`mixamorig_Head`); y=0.18 offset on child Node3D (not BoneAttachment3D itself, whose transform the skeleton overrides)
 - X Bot faces +Z after FBX2glTF import; facing uses `atan2(move_dir.x, move_dir.z)` to align the +Z front with movement direction
 
+### Electric Platforms (prompt 11 — 2026-05-16)
+- **`ElectricTile` scene** (`scenes/hazard/electric_tile.tscn`) — same 2×0.5×2 footprint as HazardTile; always gold-colored so it blends into the golden zone
+- **Hint 1 — Sparks:** looping `CPUParticles3D` child emits tiny blue sparks (amount=2, lifetime=0.3s, size=0.05) from the tile surface; subtle unless you look
+- **Hint 2 — Hum:** `AudioStreamPlayer3D` auto-loads `assets/audio/electric_hum_loop.ogg` if present (max_distance=4, fades out quickly); silently skipped if file not supplied
+- **Hint 3 — Arcs:** `flash_arc_to(other_pos, duration)` method spawns a thin blue emissive BoxMesh between the tile and a neighbor, lasting 0.1s
+- **`ElectricTileGrid` scene** (`scenes/hazard/electric_tile_grid.tscn`) — `@export_multiline var pattern`; `E` = ElectricTile (gold, deadly), `S` = inline gold StaticBody3D (safe); 2-unit pitch
+- **Arc firing:** grid script runs a random timer (0.5–1.5s interval) and fires arcs between adjacent electric tiles (≤2.5 units apart) only when the player is within 5 units of any electric tile
+- **Death:** stepping on an electric tile triggers a blue CPUParticles3D burst on the tile, a brief blue OmniLight flash, a grey dust puff at the player's position, then calls `player.die()` — no knockback, instant death flow to hub
+- **Level integration:** after the golden zone, a new golden section continues: GoldenApproachElectric (8×4 gold platform) → 4×6 ElectricTileGrid → ElectricMidPlatform (8×4 gold) → FinishPlatform (now at z=220); the electric grid tiles are gold, making dangerous tiles visually identical to safe ones
+- Audio asset still needed: place a looping ogg at `assets/audio/electric_hum_loop.ogg` to enable the hum hint
+
 ### Debug Mode (2026-05-12)
 - Type **axelrules** anywhere to toggle debug mode on/off (sliding buffer of last 9 keys, no Enter needed)
 - While debug mode is active: **1** toggles fly mode (WASD horizontal, Space=rise, Shift=descend, no gravity, no respawn); **2** adds 1 coin

@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://belectrictile1"]
+
+[ext_resource type="Script" path="res://scripts/electric_tile.gd" id="1_etile_script"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_1"]
+size = Vector3(2, 0.5, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
+size = Vector3(2, 0.5, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2"]
+size = Vector3(2, 1, 2)
+
+[node name="ElectricTile" type="StaticBody3D"]
+script = ExtResource("1_etile_script")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_1")
+
+[node name="DetectionArea" type="Area3D" parent="."]
+position = Vector3(0, 0.75, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea"]
+shape = SubResource("BoxShape3D_2")

@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bredtilegrid1" path="res://scenes/hazard/red_tile_grid.tscn" id="5_red_tile_grid"]
 [ext_resource type="PackedScene" uid="uid://dcoin000001" path="res://scenes/coin/coin.tscn" id="6_coin"]
 [ext_resource type="Script" uid="uid://bportalscrt01" path="res://scripts/portal.gd" id="8_portal_script"]
+[ext_resource type="PackedScene" path="res://scenes/hazard/electric_tile_grid.tscn" id="9_etgrid"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
 
@@ -378,8 +379,31 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.781291, 2.2424655, 177.7323
 [node name="Coin8" parent="." unique_id=1950093919 instance=ExtResource("6_coin")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.90339804, 1.7455456, 183.24461)
 
+[node name="GoldenApproachElectric" type="StaticBody3D" parent="." unique_id=700000001]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.4, 190)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="GoldenApproachElectric" unique_id=700000002]
+mesh = SubResource("BoxMesh_4")
+surface_material_override/0 = SubResource("StandardMaterial3D_gold")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GoldenApproachElectric" unique_id=700000003]
+shape = SubResource("BoxShape3D_4")
+
+[node name="ElectricTileGrid" parent="." unique_id=700000010 instance=ExtResource("9_etgrid")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.4, 196)
+
+[node name="ElectricMidPlatform" type="StaticBody3D" parent="." unique_id=700000020]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.4, 212)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ElectricMidPlatform" unique_id=700000021]
+mesh = SubResource("BoxMesh_4")
+surface_material_override/0 = SubResource("StandardMaterial3D_gold")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ElectricMidPlatform" unique_id=700000022]
+shape = SubResource("BoxShape3D_4")
+
 [node name="FinishPlatform" type="StaticBody3D" parent="." unique_id=394244571]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.4, 192)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.4, 220)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="FinishPlatform" unique_id=1554064396]
 mesh = SubResource("BoxMesh_5")
@@ -389,7 +413,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_green")
 shape = SubResource("BoxShape3D_5")
 
 [node name="FinishLabel" type="Label3D" parent="." unique_id=214752541]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 4.65, 192)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 4.65, 220)
 pixel_size = 0.02
 billboard = 1
 text = "FINISH!"
@@ -397,7 +421,7 @@ font_size = 64
 outline_size = 8
 
 [node name="ReturnToHubPortal" type="Node3D" parent="." unique_id=900000001]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 197)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 225)
 
 [node name="PillarLeft" type="StaticBody3D" parent="ReturnToHubPortal" unique_id=900000002]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9, 2, 0)
