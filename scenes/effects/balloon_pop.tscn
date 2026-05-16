@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://balloon_pop01"]
+
+[ext_resource type="Script" uid="uid://balloon_pop_gd01" path="res://scripts/balloon_pop.gd" id="1_balloon_pop_script"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_confetti"]
+size = Vector3(0.04, 0.04, 0.01)
+
+[node name="BalloonPop" type="Node3D"]
+script = ExtResource("1_balloon_pop_script")
+
+[node name="Sound" type="AudioStreamPlayer3D" parent="."]
+max_distance = 30.0
+unit_db = 0.0
+
+[node name="Confetti" type="CPUParticles3D" parent="."]
+emitting = false
+amount = 40
+lifetime = 1.2
+one_shot = true
+direction = Vector3(0, 1, 0)
+spread = 90.0
+initial_velocity_min = 2.0
+initial_velocity_max = 5.0
+angular_velocity_min = -360.0
+angular_velocity_max = 360.0
+gravity = Vector3(0, -9.8, 0)
+mesh = SubResource("BoxMesh_confetti")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 1.5
+one_shot = true
+autostart = true

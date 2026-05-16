@@ -12,6 +12,7 @@ func _ready() -> void:
 	$InteractArea.body_exited.connect(_on_body_exited)
 	ItemInventory.items_changed.connect(_refresh_label)
 	ItemInventory.equipment_changed.connect(_on_equipment_changed)
+	ItemInventory.consumable_count_changed.connect(_on_consumable_changed)
 	_setup_display()
 	_refresh_label()
 
@@ -20,11 +21,23 @@ func _setup_display() -> void:
 	if item.is_empty():
 		push_error("Pedestal references unknown item id: %s" % item_id)
 		return
+	var item_type: String = item.get("type", "equippable")
 	var slot: String = item.get("slot", "")
 	var col_arr = item.get("color", [1, 1, 1])
 	var color := Color(col_arr[0], col_arr[1], col_arr[2])
 
-	if slot == "skin":
+	if item_type == "consumable":
+		var mi := MeshInstance3D.new()
+		var sphere := SphereMesh.new()
+		sphere.radius = 0.25
+		sphere.height = 0.5
+		mi.mesh = sphere
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = color
+		mat.roughness = 0.4
+		mi.set_surface_override_material(0, mat)
+		$DisplayItem.add_child(mi)
+	elif slot == "skin":
 		var mi := MeshInstance3D.new()
 		var capsule := CapsuleMesh.new()
 		capsule.radius = 0.3
@@ -45,6 +58,12 @@ func _refresh_label() -> void:
 		return
 	var item_name: String = item.get("name", "?")
 	var price: int = int(item.get("price", 0))
+	var item_type: String = item.get("type", "equippable")
+
+	if item_type == "consumable":
+		$Label3D.text = "%s — %d coins\n[E]" % [item_name, price]
+		return
+
 	var slot: String = item.get("slot", "")
 	var is_owned := ItemInventory.owns(item_id)
 	var is_equipped := ItemInventory.get_equipped(slot) == item_id
@@ -58,6 +77,10 @@ func _refresh_label() -> void:
 
 func _on_equipment_changed(_slot: String, _id: String) -> void:
 	_refresh_label()
+
+func _on_consumable_changed(changed_id: String, _count: int) -> void:
+	if changed_id == item_id:
+		_refresh_label()
 
 func _on_body_entered(body: Node3D) -> void:
 	if body.is_in_group("player"):
@@ -79,6 +102,11 @@ func _unhandled_input(event: InputEvent) -> void:
 func _interact() -> void:
 	var item := ItemInventory.get_item(item_id)
 	if item.is_empty():
+		return
+	var item_type: String = item.get("type", "equippable")
+	if item_type == "consumable":
+		if ItemInventory.try_purchase(item_id):
+			_spawn_sparkle()
 		return
 	var slot: String = item.get("slot", "")
 	if ItemInventory.owns(item_id):

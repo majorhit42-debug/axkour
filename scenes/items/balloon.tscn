@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://balloon_scene01"]
+
+[ext_resource type="Script" uid="uid://balloon_script01" path="res://scripts/balloon.gd" id="1_balloon_script"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_body"]
+radius = 0.18
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_trigger"]
+radius = 0.22
+
+[node name="Balloon" type="RigidBody3D"]
+mass = 0.1
+gravity_scale = 0.3
+linear_damp = 0.8
+angular_damp = 1.0
+continuous_cd = true
+collision_layer = 8
+collision_mask = 9
+script = ExtResource("1_balloon_script")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+
+[node name="Knot" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+
+[node name="String" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.42, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_body")
+
+[node name="PopTrigger" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 9
+
+[node name="TriggerShape" type="CollisionShape3D" parent="PopTrigger"]
+shape = SubResource("SphereShape3D_trigger")

@@ -3,6 +3,7 @@
     {
       "id": "skin_white",
       "name": "White",
+      "type": "equippable",
       "slot": "skin",
       "price": 0,
       "owned_by_default": true,
@@ -11,6 +12,7 @@
     {
       "id": "skin_red",
       "name": "Red",
+      "type": "equippable",
       "slot": "skin",
       "price": 3,
       "owned_by_default": false,
@@ -19,6 +21,7 @@
     {
       "id": "skin_blue",
       "name": "Blue",
+      "type": "equippable",
       "slot": "skin",
       "price": 3,
       "owned_by_default": false,
@@ -27,6 +30,7 @@
     {
       "id": "skin_green",
       "name": "Green",
+      "type": "equippable",
       "slot": "skin",
       "price": 3,
       "owned_by_default": false,
@@ -35,6 +39,7 @@
     {
       "id": "hat_tophat",
       "name": "Top Hat",
+      "type": "equippable",
       "slot": "hat",
       "price": 5,
       "hat_type": "tophat",
@@ -43,6 +48,7 @@
     {
       "id": "hat_party",
       "name": "Party Hat",
+      "type": "equippable",
       "slot": "hat",
       "price": 3,
       "hat_type": "cone",
@@ -51,10 +57,21 @@
     {
       "id": "hat_cowboy",
       "name": "Cowboy Hat",
+      "type": "equippable",
       "slot": "hat",
       "price": 4,
       "hat_type": "cowboy",
       "color": [0.6, 0.35, 0.1]
+    },
+    {
+      "id": "balloon",
+      "display_name": "Balloons (10x)",
+      "name": "Balloons (10x)",
+      "type": "consumable",
+      "quantity_per_purchase": 10,
+      "price": 2,
+      "cost": 2,
+      "color": [1.0, 0.4, 0.67]
     }
   ]
 }

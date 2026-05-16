@@ -3,12 +3,14 @@ extends Node
 
 signal items_changed
 signal equipment_changed(slot: String, item_id: String)
+signal consumable_count_changed(item_id: String, new_count: int)
 
 const ITEMS_PATH := "res://assets/shop_items.json"
 
-var item_data: Dictionary = {}     # id -> item dict (raw JSON)
-var owned_items: Dictionary = {}    # id -> true
-var equipped: Dictionary = {}       # slot -> item_id
+var item_data: Dictionary = {}           # id -> item dict (raw JSON)
+var owned_items: Dictionary = {}          # id -> true
+var equipped: Dictionary = {}             # slot -> item_id
+var consumable_quantities: Dictionary = {} # item_id -> int
 
 func _ready() -> void:
 	_load_items()
@@ -61,14 +63,34 @@ func equip(slot: String, item_id: String) -> void:
 func get_equipped(slot: String) -> String:
 	return equipped.get(slot, "")
 
+func add_consumable(item_id: String, amount: int) -> void:
+	consumable_quantities[item_id] = get_consumable_count(item_id) + amount
+	consumable_count_changed.emit(item_id, consumable_quantities[item_id])
+
+func use_consumable(item_id: String) -> bool:
+	var count := get_consumable_count(item_id)
+	if count <= 0:
+		return false
+	consumable_quantities[item_id] = count - 1
+	consumable_count_changed.emit(item_id, consumable_quantities[item_id])
+	return true
+
+func get_consumable_count(item_id: String) -> int:
+	return consumable_quantities.get(item_id, 0)
+
 func try_purchase(item_id: String) -> bool:
 	var item := get_item(item_id)
 	if item.is_empty():
 		return false
-	if owns(item_id):
+	var item_type: String = item.get("type", "equippable")
+	if item_type == "equippable" and owns(item_id):
 		return false
 	var price: int = int(item.get("price", 0))
 	if not CoinWallet.spend_coins(price):
 		return false
-	grant(item_id)
+	if item_type == "consumable":
+		var qty: int = int(item.get("quantity_per_purchase", 1))
+		add_consumable(item_id, qty)
+	else:
+		grant(item_id)
 	return true

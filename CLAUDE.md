@@ -183,6 +183,15 @@ axkour/
 - Type **axelrules** anywhere to toggle debug mode on/off (sliding buffer of last 9 keys, no Enter needed)
 - While debug mode is active: **1** toggles fly mode (WASD horizontal, Space=rise, Shift=descend, no gravity, no respawn); **2** adds 1 coin
 
+### Balloons (prompt 13 — 2026-05-16)
+- **Consumable inventory** added to `ItemInventory` — `consumable_quantities` dict, `add_consumable()`, `use_consumable()`, `get_consumable_count()`, and `consumable_count_changed` signal; `try_purchase()` now routes consumables vs equippables by item `type` field
+- **Balloon pedestal** in the hub ShopPavilion at (0, 0.5, -2) — displays a pink sphere; label reads "Balloons (10x) — 2 coins"; re-purchaseable anytime (refills to current + 10); sparkle effect on purchase
+- **Balloon scene** (`scenes/items/balloon.tscn`) — `RigidBody3D`, mass 0.1, gravity_scale 0.3, floaty air resistance; random color from 7-color palette; `Area3D` PopTrigger pops on contact with any dynamic body (not `StaticBody3D`)
+- **Pop effect** (`scenes/effects/balloon_pop.tscn`) — plays `assets/audio/pop.mp3`, 40-particle confetti burst with multi-color gradient, auto-destructs after 1.5s
+- **Drop/Throw input** — **Q** (keyboard) or **RB** (gamepad) via new `drop_throw_balloon` action; tap = drop at feet (zero velocity); hold = charge throw (0.15s threshold, max 1.0s charge); throw arc forward + UP*0.4 at lerp(4, 12, charge) units/sec
+- **HUD balloon counter** — pink "Balloons: N" label (font 28) appears top-right below coin counter when count > 0, hides when count reaches 0; subscribes to `consumable_count_changed` signal
+- Audio asset: `assets/audio/pop.mp3` (Todd-supplied)
+
 ---
 
 ## Roadmap
@@ -198,7 +207,7 @@ Movement, quiz gates, Don't Touch Red, deployed to Vercel.
 ### v0.3 — Combat (~3 prompts)
 - CPU opponent bots running the course (simple path-followers first)
 - Slap mechanic — short-range push, lethal if target falls — unlocked via store
-- Balloons as area attack item
+- Balloons as area attack item — balloon drop/throw is implemented (v1 toy); AOE damage to nearby characters is the v0.3 addition (uses the `placer` field on `balloon.gd`)
 
 ### v0.4 — Remaining store items (~1–2 prompts)
 - Magic carpet — single-use section skip

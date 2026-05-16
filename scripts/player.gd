@@ -10,6 +10,9 @@ const FLY_SPEED = 10.0
 const _CHEAT_CODE := "axelrules"
 
 const DEATH_SCREEN_SCENE := preload("res://scenes/ui/death_screen.tscn")
+const BALLOON_SCENE := preload("res://scenes/items/balloon.tscn")
+const DROP_THRESHOLD := 0.15
+const MAX_CHARGE_TIME := 1.0
 
 var respawn_position: Vector3
 var camera_y: float
@@ -17,6 +20,8 @@ var is_dead: bool = false
 var _cheat_buffer: String = ""
 var _debug_mode: bool = false
 var _fly_mode: bool = false
+var _balloon_button_held_time: float = 0.0
+var _balloon_button_pressed: bool = false
 
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var spring_arm: SpringArm3D = $CameraPivot/SpringArm3D
@@ -260,6 +265,8 @@ func _physics_process(delta: float) -> void:
 	if not _fly_mode and global_position.y < RESPAWN_Y:
 		die()
 
+	_handle_balloon_input(delta)
+
 	camera_y = lerp(camera_y, global_position.y, CAMERA_Y_DAMP * delta)
 	camera_pivot.global_position.y = camera_y
 
@@ -268,3 +275,49 @@ func _physics_process(delta: float) -> void:
 		camera_pivot.rotate_y(-look.x * RIGHT_STICK_SENS)
 		spring_arm.rotate_x(-look.y * RIGHT_STICK_SENS)
 		spring_arm.rotation.x = clamp(spring_arm.rotation.x, deg_to_rad(-80), deg_to_rad(80))
+
+func _handle_balloon_input(delta: float) -> void:
+	if is_dead:
+		return
+	if Input.is_action_just_pressed("drop_throw_balloon"):
+		_balloon_button_pressed = true
+		_balloon_button_held_time = 0.0
+	elif Input.is_action_pressed("drop_throw_balloon") and _balloon_button_pressed:
+		_balloon_button_held_time += delta
+	elif Input.is_action_just_released("drop_throw_balloon") and _balloon_button_pressed:
+		_balloon_button_pressed = false
+		if ItemInventory.get_consumable_count("balloon") <= 0:
+			return
+		if _balloon_button_held_time < DROP_THRESHOLD:
+			_drop_balloon()
+		else:
+			var charge: float = clamp((_balloon_button_held_time - DROP_THRESHOLD) / MAX_CHARGE_TIME, 0.0, 1.0)
+			_throw_balloon(charge)
+		ItemInventory.use_consumable("balloon")
+
+func _spawn_balloon_at(spawn_pos: Vector3) -> RigidBody3D:
+	var balloon = BALLOON_SCENE.instantiate()
+	get_tree().current_scene.add_child(balloon)
+	balloon.global_position = spawn_pos
+	return balloon
+
+func _drop_balloon() -> void:
+	var cam_basis := camera_pivot.global_transform.basis
+	var forward := -cam_basis.z
+	forward.y = 0.0
+	if forward.length() > 0.01:
+		forward = forward.normalized()
+	var spawn_pos := global_position + Vector3(0, 0.8, 0) + forward * 0.7
+	_spawn_balloon_at(spawn_pos)
+
+func _throw_balloon(charge: float) -> void:
+	var cam_basis := camera_pivot.global_transform.basis
+	var forward := -cam_basis.z
+	forward.y = 0.0
+	if forward.length() > 0.01:
+		forward = forward.normalized()
+	var spawn_pos := global_position + Vector3(0, 1.0, 0) + forward * 0.7
+	var balloon := _spawn_balloon_at(spawn_pos)
+	var speed := lerp(4.0, 12.0, charge)
+	var throw_vec := (forward + Vector3.UP * 0.4) * speed
+	balloon.apply_central_impulse(throw_vec * balloon.mass)
