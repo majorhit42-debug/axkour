@@ -17,6 +17,12 @@
       "text": "When was Axerooms created?",
       "answers": ["March 2026", "October 2024"],
       "correct_index": 0
+    },
+    {
+      "id": "q04",
+      "question": "When were Legos invented?",
+      "correct_answer": "1932",
+      "wrong_answers": ["1965", "1908", "1979"]
     }
   ]
 }

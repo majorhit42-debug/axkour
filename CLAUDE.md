@@ -75,11 +75,13 @@ axkour/
 - Level spawns the player dynamically; `respawn_position` set from `PlayerStart` Marker3D
 - HTML5 export preset configured (Web, single-threaded, builds/web/index.html)
 
-### Quiz Gates (prompt 02 — 2026-05-09)
+### Quiz Gates (prompt 02 — 2026-05-09; variable answers added prompt 14 — 2026-06-08)
 - `assets/questions.json` question pool — JSON-driven, easy to edit
-- Three seed questions: game creation date, Axel's favorite color, Axerooms creation date
-- `QuizGate` scene: side-by-side fork platforms (8 units apart), billboarded question + answer labels
-- Wrong platform: turns red, explodes after 1.5s — player falls and respawns via existing respawn logic
+- Four questions: game creation date, Axel's favorite color, Axerooms creation date, Lego invention date (q04, 4-answer)
+- `QuizGate` scene: dynamically builds 2, 3, or 4 fork platforms at runtime based on `wrong_answers` count; answers shuffled each run so the correct position varies
+- N=2 → ±4 spacing; N=3 → −6/0/+6; N=4 → −7.5/−2.5/+2.5/+7.5
+- JSON supports three shapes: new (`question`/`correct_answer`/`wrong_answers[]`), compat singular (`wrong_answer`), and original (`text`/`answers[]`/`correct_index`) — all handled transparently
+- Wrong platform: turns red, explodes after 0.3s — player falls and respawns via existing death flow
 - Correct platform: no-op, player continues forward
 - Three gates in level_01 (q01 → q02 → q03) with approach and reconverge platforms between each
 - Green FINISH platform with "FINISH!" label after Gate 3
