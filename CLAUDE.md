@@ -194,6 +194,17 @@ axkour/
 - **HUD balloon counter** — pink "Balloons: N" label (font 28) appears top-right below coin counter when count > 0, hides when count reaches 0; subscribes to `consumable_count_changed` signal
 - Audio asset: `assets/audio/pop.mp3` (Todd-supplied)
 
+### Level 02 — Frosting Falls (prompt 15 — 2026-06-08)
+- **Theme:** pastel candyland — soft pink/mint/blue/lavender/yellow platforms, peach-pink procedural sky, warm white sun
+- **Section 1 — Sweet Start (z=0–40):** 6 floating 4×4 pastel platforms with 3.5-unit gaps and slight Y variation (0/0.5 alternating)
+- **Section 2 — The Lego Gate (z=44–60):** single QuizGate with question_id `q04` (When were Legos invented? — 4-answer, added in prompt 14); wide 20×4 reconverge platform to catch landing from any fork
+- **Section 3 — Sprinkle Steps (z=68–89):** 8 individual HazardTile stepping stones, 3 red / 5 safe, 3-unit spacing, zigzag layout
+- **Section 4 — The Sprinkle Floor (z=96–122):** 5×6 RedTileGrid (prompt pattern: ~8 red tiles, navigable safe path), exit platform
+- **Section 5 — Finish (z=128):** bright-emission blue 10×6 finish platform, gold FINISH! label, ReturnToHubPortal (orange archway)
+- **Candyland props** built programmatically via `CandylandProps` static helper (`scripts/candyland_props.gd`): giant lollipops (5), giant donuts (6), cotton candy clouds (6) — all from Godot primitives, no external models
+- **Hub integration:** Level02Portal at (−12, 0, 20) with pastel pink glow and "LEVEL 02 — FROSTING FALLS" label; sits to the left of Level01Portal on the north wall
+- `scripts/candyland_props.gd` — reusable static factory for sweet-themed level decoration
+
 ---
 
 ## Roadmap
@@ -224,7 +235,8 @@ Movement, quiz gates, Don't Touch Red, deployed to Vercel.
 - Free SFX libraries; audio latency fix (50–80ms output latency for web)
 
 ### v0.7 — Real levels & level select (~3–5 prompts)
-- level_01 stays the test bed; new levels introduce concepts gradually
+- ~~First real level (level_02 Frosting Falls)~~ ✓ Done
+- level_01 stays the test bed; remaining work is additional levels and a level select screen
 - Level select screen
 
 ### v0.8 — Menus, polish, ship (~2–3 prompts)
