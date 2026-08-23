@@ -68,8 +68,9 @@ func _build_forks(q: Dictionary) -> void:
 	answers.shuffle()
 
 	var x_positions := _x_positions(answers.size())
+	var width := _platform_width(answers.size())
 	for i in answers.size():
-		_build_platform(answers[i], x_positions[i])
+		_build_platform(answers[i], x_positions[i], width)
 
 func _x_positions(n: int) -> Array:
 	match n:
@@ -84,14 +85,24 @@ func _x_positions(n: int) -> Array:
 				out.append(-total / 2.0 + i * spacing)
 			return out
 
-func _build_platform(answer_data: Dictionary, x: float) -> void:
+# Fork width must stay narrower than the gap between _x_positions entries,
+# or neighbouring platforms overlap and a player on the correct fork also
+# stands inside a wrong fork's trigger area.
+func _platform_width(n: int) -> float:
+	match n:
+		2: return 6.0  # spacing 8 -> 2.0 gap
+		3: return 5.0  # spacing 6 -> 1.0 gap
+		4: return 4.0  # spacing 5 -> 1.0 gap
+		_: return 4.0  # fallback spacing 5 -> 1.0 gap
+
+func _build_platform(answer_data: Dictionary, x: float, width: float) -> void:
 	var platform := StaticBody3D.new()
 	platform.position = Vector3(x, 0, 0)
 	platform.set_meta("is_correct", answer_data.is_correct)
 
 	var mesh_inst := MeshInstance3D.new()
 	var box_mesh := BoxMesh.new()
-	box_mesh.size = Vector3(6, 0.5, 6)
+	box_mesh.size = Vector3(width, 0.5, 6)
 	mesh_inst.mesh = box_mesh
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = Color.WHITE
@@ -100,7 +111,7 @@ func _build_platform(answer_data: Dictionary, x: float) -> void:
 
 	var col := CollisionShape3D.new()
 	var box_shape := BoxShape3D.new()
-	box_shape.size = Vector3(6, 0.5, 6)
+	box_shape.size = Vector3(width, 0.5, 6)
 	col.shape = box_shape
 	platform.add_child(col)
 
@@ -108,7 +119,8 @@ func _build_platform(answer_data: Dictionary, x: float) -> void:
 	area.position = Vector3(0, 0.75, 0)
 	var area_col := CollisionShape3D.new()
 	var area_shape := BoxShape3D.new()
-	area_shape.size = Vector3(6, 1, 6)
+	# Inset from the platform edges so a player at the rim can't clip a neighbour.
+	area_shape.size = Vector3(width - 0.6, 1, 5.4)
 	area_col.shape = area_shape
 	area.add_child(area_col)
 	area.body_entered.connect(_on_platform_entered.bind(platform))

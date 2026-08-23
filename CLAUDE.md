@@ -80,6 +80,7 @@ axkour/
 - Four questions: game creation date, Axel's favorite color, Axerooms creation date, Lego invention date (q04, 4-answer)
 - `QuizGate` scene: dynamically builds 2, 3, or 4 fork platforms at runtime based on `wrong_answers` count; answers shuffled each run so the correct position varies
 - N=2 → ±4 spacing; N=3 → −6/0/+6; N=4 → −7.5/−2.5/+2.5/+7.5
+- **Fork width scales with answer count** (`_platform_width()`): N=2 → 6 wide, N=3 → 5, N=4 → 4. The width must stay under the spacing or neighbouring platforms overlap — a player on the correct fork would also stand inside a wrong fork's trigger area and explode no matter what they picked (this was the level_02 4-answer bug, fixed 2026-08-23). Trigger `Area3D` is inset 0.6 on X / 0.6 on Z from the platform edges for the same reason.
 - JSON supports three shapes: new (`question`/`correct_answer`/`wrong_answers[]`), compat singular (`wrong_answer`), and original (`text`/`answers[]`/`correct_index`) — all handled transparently
 - Wrong platform: turns red, explodes after 0.3s — player falls and respawns via existing death flow
 - Correct platform: no-op, player continues forward
