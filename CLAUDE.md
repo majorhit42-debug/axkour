@@ -220,6 +220,12 @@ axkour/
 - Level 02 has one bot ("Turbo", `quiz_accuracy` 0.75) defined in a `BOTS` list in `level_02.gd` — growing the pack is a data change. Level 01 has no route yet.
 - **Bot verification is headless**: a temporary scene run via `godot --headless res://<scene>.tscn` (autoloads only exist when the project's main loop runs — `--script` mode can't see them). Current bot completes level_02 in ~22s.
 
+### Spawn Facing + Starting Gate (prompts 17 & 18 — 2026-08-24)
+- **Spawn facing fixed** — `player.gd::set_spawn_facing(dir)` points the camera pivot and character mesh along a direction; called from `level.gd`, `level_02.gd` and `hub.gd` (bots get a mesh-only version). Previously every spawn only set `global_position`, leaving `CameraPivot.rotation.y` at 0 — and since the `Camera3D` sits at the spring arm's **+Z** and looks down its own **−Z**, yaw 0 meant looking along global −Z, i.e. backwards up every course. Camera yaw is `atan2(-dir.x, -dir.z)`; mesh yaw is `atan2(dir.x, dir.z)`.
+- Levels pass `COURSE_DIRECTION` (+Z); the hub faces spawns toward the pavilion at the origin, so the resurrection pod at x=10 correctly looks −X.
+- **5-second starting gate** — `RaceState.start_countdown()` / `is_locked()` / `countdown_tick` / `race_started`. The player's movement and jump are held while locked; **camera look stays free**, which is the point. Bots hold at the start line and release on the same signal. HUD shows a big centred `5·4·3·2·1·GO!`.
+- `is_locked()` returns false when no countdown is running, so level_01 and the hub are unaffected.
+
 ### Level 02 fixes (2026-08-24)
 Three blocking bugs, all invisible until the quiz gate was fixed — the gate blocked the level at z=52, so sections 3–5 had never been reachable:
 - **Quiz forks overlapped** (see Quiz Gates above) — every answer exploded.

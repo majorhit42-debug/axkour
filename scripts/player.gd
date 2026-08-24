@@ -77,6 +77,20 @@ func _apply_skin() -> void:
 		col = Color(col_arr[0], col_arr[1], col_arr[2])
 	CharacterRig.apply_skin_color(_body_mesh, col)
 
+# Point the player (and the camera behind them) along `dir`. Spawn code only ever set
+# global_position, which left the camera at yaw 0 — and since the Camera3D sits at the
+# spring arm's +Z and looks down its own -Z, yaw 0 means looking along global -Z, i.e.
+# backwards up every course.
+func set_spawn_facing(dir: Vector3) -> void:
+	dir.y = 0.0
+	if dir.length() < 0.01:
+		return
+	dir = dir.normalized()
+	camera_pivot.rotation.y = atan2(-dir.x, -dir.z)
+	if _character_mesh:
+		# X Bot faces +Z after FBX2glTF import, matching _physics_process
+		_character_mesh.rotation.y = atan2(dir.x, dir.z)
+
 func die() -> void:
 	if is_dead:
 		return
@@ -188,6 +202,9 @@ func _physics_process(delta: float) -> void:
 			velocity.y -= ProjectSettings.get_setting("physics/3d/default_gravity") * delta
 
 		var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+		# Starting gate: movement and jump are held, camera look is not.
+		if RaceState.is_locked():
+			input_dir = Vector2.ZERO
 
 		var cam_basis := camera_pivot.global_transform.basis
 		var forward := -cam_basis.z
@@ -204,7 +221,7 @@ func _physics_process(delta: float) -> void:
 		velocity.x = move_dir.x * SPEED
 		velocity.z = move_dir.z * SPEED
 
-		if Input.is_action_just_pressed("jump") and is_on_floor():
+		if Input.is_action_just_pressed("jump") and is_on_floor() and not RaceState.is_locked():
 			velocity.y = JUMP_VELOCITY
 
 		if _character_mesh and move_dir.length() > 0.01:

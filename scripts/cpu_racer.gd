@@ -82,6 +82,15 @@ func _apply_random_cosmetics() -> void:
 		var hc = hat.get("color", [1, 1, 1])
 		CharacterRig.apply_hat(_hat_mount, hat.get("hat_type", ""), Color(hc[0], hc[1], hc[2]))
 
+# Mesh only — bots have no camera. Same signature as the player's so spawn code can
+# treat every racer the same.
+func set_spawn_facing(dir: Vector3) -> void:
+	dir.y = 0.0
+	if dir.length() < 0.01 or not _character_mesh:
+		return
+	dir = dir.normalized()
+	_character_mesh.rotation.y = atan2(dir.x, dir.z)
+
 func set_route(route: RacerRoute) -> void:
 	_route = route
 	# Start at the point *after* the nearest one. Point 0 sits on the start marker,
@@ -189,6 +198,13 @@ func _physics_process(delta: float) -> void:
 	# frame one. Running during that drop walks it off a small start platform before it
 	# ever gets a grounded frame to jump from.
 	if not _has_landed:
+		velocity.x = 0.0
+		velocity.z = 0.0
+		move_and_slide()
+		return
+
+	# Starting gate: bots hold with the player.
+	if RaceState.is_locked():
 		velocity.x = 0.0
 		velocity.z = 0.0
 		move_and_slide()

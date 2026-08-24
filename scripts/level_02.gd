@@ -5,6 +5,8 @@ extends Node3D
 const CPU_RACER_SCENE := preload("res://scenes/racer/cpu_racer.tscn")
 const PLAYER_RACER_NAME := "You"
 const FINISH_Z := 126.0
+const COURSE_DIRECTION := Vector3(0, 0, 1)
+const COUNTDOWN_SECONDS := 5.0
 
 # One entry per CPU racer. A list from day one so growing the pack is a data change.
 # quiz_accuracy is deliberately high on a solo bot: a bad roll at the Lego gate would
@@ -27,6 +29,7 @@ func _ready() -> void:
 	_spawn_player()
 	_spawn_bots()
 	_spawn_props()
+	RaceState.start_countdown(COUNTDOWN_SECONDS)
 
 func _spawn_player() -> void:
 	var player := player_scene.instantiate()
@@ -36,6 +39,7 @@ func _spawn_player() -> void:
 	player.position = $PlayerStart.position
 	add_child(player)
 	player.respawn_position = $PlayerStart.global_position
+	player.set_spawn_facing(COURSE_DIRECTION)
 	_player = player
 	RaceState.register_racer(PLAYER_RACER_NAME)
 
@@ -49,6 +53,7 @@ func _spawn_bots() -> void:
 		racer.speed_jitter = bot.speed_jitter
 		racer.position = $PlayerStart.position + Vector3(bot.x, 0, 0)
 		add_child(racer)
+		racer.set_spawn_facing(COURSE_DIRECTION)
 		racer.set_route(route)
 
 func _process(_delta: float) -> void:

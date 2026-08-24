@@ -2,6 +2,9 @@ extends Node3D
 
 @export var player_scene: PackedScene
 
+# The shop pavilion sits at the world origin; spawns face it.
+const PAVILION_CENTER := Vector3(0, 1, 0)
+
 func _ready() -> void:
 	var player := player_scene.instantiate()
 	add_child(player)
@@ -12,12 +15,14 @@ func _ready() -> void:
 		player.global_position = pod_spot.global_position
 		player.respawn_position = $PlayerStart.global_position
 		player.camera_y = pod_spot.global_position.y
+		player.set_spawn_facing(PAVILION_CENTER - pod_spot.global_position)
 		player.is_dead = true
 		_trigger_materialization(pod_spot.global_position, player)
 	else:
 		player.global_position = $PlayerStart.global_position
 		player.respawn_position = $PlayerStart.global_position
 		player.camera_y = $PlayerStart.global_position.y
+		player.set_spawn_facing(PAVILION_CENTER - $PlayerStart.global_position)
 
 func _trigger_materialization(pos: Vector3, player: Node3D) -> void:
 	_spawn_pod_burst(pos)
