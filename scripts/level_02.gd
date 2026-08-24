@@ -7,6 +7,7 @@ const PLAYER_RACER_NAME := "You"
 const FINISH_Z := 126.0
 const COURSE_DIRECTION := Vector3(0, 0, 1)
 const COUNTDOWN_SECONDS := 5.0
+const RACE_TITLE := "FROSTING FALLS"
 
 # One entry per CPU racer. A list from day one so growing the pack is a data change.
 # quiz_accuracy is deliberately high on a solo bot: a bad roll at the Lego gate would
@@ -29,7 +30,7 @@ func _ready() -> void:
 	_spawn_player()
 	_spawn_bots()
 	_spawn_props()
-	RaceState.start_countdown(COUNTDOWN_SECONDS)
+	RaceState.start_countdown(COUNTDOWN_SECONDS, RACE_TITLE)
 
 func _spawn_player() -> void:
 	var player := player_scene.instantiate()

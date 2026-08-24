@@ -121,7 +121,7 @@ axkour/
 - `CoinWallet` autoload singleton (`scripts/coin_wallet.gd`) — global coin state with `add_coins()`, `lose_random_coins()`, `spend_coins()`, and `coin_count_changed` signal
 - `Coin` scene (`scenes/coin/coin.tscn`) — `Area3D` with sphere collision; spins on Y axis; gold metallic material with emission glow; one-time collect (gone for the session after pickup)
 - `Sparkle` effect (`scenes/effects/sparkle.tscn`) — 15 gold `CPUParticles3D` particles, one-shot, auto-destructs after 1s
-- HUD (`scenes/ui/hud.tscn`) — `CanvasLayer` sibling in `main.tscn` (persists across level swaps); shows "Coins: N" top-right in gold with black outline, font size 32
+- HUD (`scenes/ui/hud.tscn`) — `CanvasLayer`, **autoloaded** since prompt 19 so it survives `change_scene_to_file` (it was a `main.tscn` sibling before, which did *not* persist into levels); shows "Coins: N" top-right in gold with black outline, font size 32
 - Player respawn now calls `CoinWallet.lose_random_coins()` — random 1–3 coin penalty on death, clamped at 0
 - Golden zone in level_01: approach platform → 6 gold-tinted 3×3 platforms with 4–5 unit gaps, height variation (alternating Y=0.4/1.9), and lateral offsets — one coin above each platform
 - FinishPlatform moved to z=192 to make room for the golden zone
@@ -225,6 +225,11 @@ axkour/
 - Levels pass `COURSE_DIRECTION` (+Z); the hub faces spawns toward the pavilion at the origin, so the resurrection pod at x=10 correctly looks −X.
 - **5-second starting gate** — `RaceState.start_countdown()` / `is_locked()` / `countdown_tick` / `race_started`. The player's movement and jump are held while locked; **camera look stays free**, which is the point. Bots hold at the start line and release on the same signal. HUD shows a big centred `5·4·3·2·1·GO!`.
 - `is_locked()` returns false when no countdown is running, so level_01 and the hub are unaffected.
+
+### Countdown Overlay + HUD Autoload (prompt 19 — 2026-08-24)
+- **The HUD is now an autoload** (`HUD="*res://scenes/ui/hud.tscn"`), not a child of `main.tscn`. Portals swap levels with `change_scene_to_file()`, which replaces the **entire** scene — so the old HUD was destroyed on entering any level, taking the coin counter, balloon counter, race callouts and countdown with it. (Earlier notes in this file claimed it persisted; it never did.)
+- **Every HUD Control sets `mouse_filter = 2` (IGNORE).** The countdown is a full-screen Control, and one that accepts the mouse swallows the click that grabs pointer lock on web — same failure class as the "no CanvasLayer under Player" rule.
+- **Countdown overlay**: dimmed full-screen ColorRect, race title from `RaceState.start_countdown(seconds, title)`, "GET READY" + a hint that the camera still works, a big number, then "GO!" in green as the overlay fades out.
 
 ### Level 02 fixes (2026-08-24)
 Three blocking bugs, all invisible until the quiz gate was fixed — the gate blocked the level at z=52, so sections 3–5 had never been reachable:

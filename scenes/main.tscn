@@ -1,10 +1,7 @@
 [gd_scene format=3 uid="uid://bmainscene001"]
 
 [ext_resource type="PackedScene" uid="uid://bhubscene0001" path="res://scenes/hub/hub.tscn" id="1_hub"]
-[ext_resource type="PackedScene" uid="uid://dhudscene01" path="res://scenes/ui/hud.tscn" id="2_hud"]
 
 [node name="Main" type="Node" unique_id=210704951]
 
 [node name="Hub" parent="." unique_id=1839583928 instance=ExtResource("1_hub")]
-
-[node name="HUD" parent="." instance=ExtResource("2_hud")]

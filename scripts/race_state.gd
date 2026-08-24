@@ -18,6 +18,7 @@ var active_racers: Array[String] = []
 var finish_order: Array[String] = []
 
 var countdown_remaining: float = 0.0
+var race_title: String = ""
 var _last_tick: int = -1
 
 func reset_race() -> void:
@@ -29,7 +30,8 @@ func reset_race() -> void:
 
 # Holds every racer at the start line for `duration` seconds. Camera look stays free —
 # the point is to let players get oriented before anything moves.
-func start_countdown(duration: float) -> void:
+func start_countdown(duration: float, title: String = "") -> void:
+	race_title = title
 	countdown_remaining = duration
 	_last_tick = int(ceil(duration))
 	countdown_tick.emit(_last_tick)
