@@ -23,6 +23,7 @@ config/features=PackedStringArray("4.6", "GL Compatibility")
 CoinWallet="*res://scripts/coin_wallet.gd"
 ItemInventory="*res://scripts/item_inventory.gd"
 GameState="*res://scripts/game_state.gd"
+RaceState="*res://scripts/race_state.gd"
 
 [input]
 

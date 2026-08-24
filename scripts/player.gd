@@ -46,51 +46,12 @@ func _ready() -> void:
 	_apply_hat()
 
 func _setup_body_mesh() -> void:
-	_body_mesh = _find_first_mesh(_character_mesh)
+	_body_mesh = CharacterRig.find_first_mesh(_character_mesh)
 	if not _body_mesh:
 		push_warning("Player: MeshInstance3D not found in CharacterMesh")
 
 func _setup_hat_mount() -> void:
-	var skeleton := _find_skeleton(_character_mesh)
-	if not skeleton:
-		push_warning("Player: Skeleton3D not found in CharacterMesh")
-		return
-	# Resolve head bone index directly; Godot converts ':' to '_' on FBX import
-	var head_idx := skeleton.find_bone("mixamorig_Head")
-	if head_idx < 0:
-		head_idx = skeleton.find_bone("mixamorig:Head")
-	if head_idx < 0:
-		push_warning("Player: head bone not found (bone count: %d)" % skeleton.get_bone_count())
-		return
-	# BoneAttachment3D's own transform is overridden by the bone every frame,
-	# so the y-offset lives on a child node instead.
-	var bone_attach := BoneAttachment3D.new()
-	bone_attach.name = "HatBoneAttach"
-	bone_attach.bone_idx = head_idx
-	skeleton.add_child(bone_attach)
-	var hat_offset := Node3D.new()
-	hat_offset.name = "HatMount"
-	hat_offset.position.y = 0.18
-	bone_attach.add_child(hat_offset)
-	_hat_mount = hat_offset
-
-func _find_first_mesh(node: Node) -> MeshInstance3D:
-	if node is MeshInstance3D:
-		return node
-	for child in node.get_children():
-		var found := _find_first_mesh(child)
-		if found:
-			return found
-	return null
-
-func _find_skeleton(node: Node) -> Skeleton3D:
-	if node is Skeleton3D:
-		return node
-	for child in node.get_children():
-		var found := _find_skeleton(child)
-		if found:
-			return found
-	return null
+	_hat_mount = CharacterRig.create_hat_mount(_character_mesh)
 
 func _on_equipment_changed(slot: String, _id: String) -> void:
 	if slot == "skin":
@@ -99,32 +60,22 @@ func _on_equipment_changed(slot: String, _id: String) -> void:
 		_apply_hat()
 
 func _apply_hat() -> void:
-	if not _hat_mount:
-		return
-	for child in _hat_mount.get_children():
-		child.queue_free()
 	var hat_id := ItemInventory.get_equipped("hat")
 	if hat_id.is_empty():
+		CharacterRig.apply_hat(_hat_mount, "", Color.WHITE)
 		return
 	var item := ItemInventory.get_item(hat_id)
 	var col_arr = item.get("color", [1, 1, 1])
-	var hat_type: String = item.get("hat_type", "")
-	for mi in HatBuilder.make_meshes(hat_type, Color(col_arr[0], col_arr[1], col_arr[2]), 1.0):
-		_hat_mount.add_child(mi)
+	CharacterRig.apply_hat(_hat_mount, item.get("hat_type", ""), Color(col_arr[0], col_arr[1], col_arr[2]))
 
 func _apply_skin() -> void:
-	if not _body_mesh:
-		return
 	var col := Color(1, 1, 1)
 	var skin_id := ItemInventory.get_equipped("skin")
 	if not skin_id.is_empty():
 		var item := ItemInventory.get_item(skin_id)
 		var col_arr = item.get("color", [1, 1, 1])
 		col = Color(col_arr[0], col_arr[1], col_arr[2])
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = col
-	mat.roughness = 0.7
-	_body_mesh.set_surface_override_material(0, mat)
+	CharacterRig.apply_skin_color(_body_mesh, col)
 
 func die() -> void:
 	if is_dead:
@@ -132,6 +83,7 @@ func die() -> void:
 	is_dead = true
 	CoinWallet.lose_random_coins()
 	GameState.respawning_from_death = true
+	RaceState.report_eliminated("You")
 	velocity = Vector3.ZERO
 	_knockback_timer = 0.0
 	var screen := DEATH_SCREEN_SCENE.instantiate()

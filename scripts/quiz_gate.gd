@@ -7,8 +7,6 @@ const QUESTIONS_PATH := "res://assets/questions.json"
 @export var question_id: String = ""
 @export var explode_delay: float = 0.3
 
-var _wrong_triggered: bool = false
-
 func _ready() -> void:
 	var q := _load_question()
 	if q.is_empty():
@@ -139,13 +137,33 @@ func _build_platform(answer_data: Dictionary, x: float, width: float) -> void:
 	$ForkContainer.add_child(platform)
 
 func _on_platform_entered(body: Node3D, platform: StaticBody3D) -> void:
-	if not body.is_in_group("player"): return
+	if not body.is_in_group("racer"): return
 	if platform.get_meta("is_correct", false): return
 	_trigger_wrong(platform)
 
+# Picks a fork for a CPU racer: the correct one with probability `accuracy`,
+# otherwise a random wrong one. Returns the fork's global position.
+func choose_fork_position(accuracy: float) -> Vector3:
+	var forks := $ForkContainer.get_children()
+	if forks.is_empty():
+		return global_position
+	var correct: Array = []
+	var wrong: Array = []
+	for f in forks:
+		if f.get_meta("is_correct", false):
+			correct.append(f)
+		else:
+			wrong.append(f)
+	var pool: Array = correct if (randf() < accuracy and not correct.is_empty()) else wrong
+	if pool.is_empty():
+		pool = forks
+	return pool[randi() % pool.size()].global_position
+
 func _trigger_wrong(platform: StaticBody3D) -> void:
-	if _wrong_triggered: return
-	_wrong_triggered = true
+	# Per-platform, not gate-wide: with more than one racer, a bot setting off
+	# its fork must not stop another racer's fork from exploding.
+	if platform.get_meta("triggered", false): return
+	platform.set_meta("triggered", true)
 	for child in platform.get_children():
 		if child is MeshInstance3D:
 			var red_mat := StandardMaterial3D.new()

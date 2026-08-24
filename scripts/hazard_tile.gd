@@ -29,7 +29,7 @@ func _apply_color() -> void:
 	$Mesh.set_surface_override_material(0, mat)
 
 func _on_player_entered(body: Node3D) -> void:
-	if _triggered or not is_red or not body.is_in_group("player"):
+	if _triggered or not is_red or not body.is_in_group("racer"):
 		return
 	_triggered = true
 	await get_tree().create_timer(fall_delay).timeout

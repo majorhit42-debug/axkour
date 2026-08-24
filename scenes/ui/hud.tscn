@@ -25,6 +25,27 @@ theme_override_constants/outline_size = 4
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 32
 
+[node name="RaceAnnounce" type="Control" parent="."]
+visible = false
+offset_left = -300.0
+offset_top = 90.0
+offset_right = 300.0
+offset_bottom = 140.0
+anchor_left = 0.5
+anchor_right = 0.5
+
+[node name="Label" type="Label" parent="RaceAnnounce"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = ""
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(1, 0.35, 0.3, 1)
+theme_override_constants/outline_size = 6
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+
 [node name="BalloonCounter" type="Control" parent="."]
 visible = false
 offset_left = -220.0

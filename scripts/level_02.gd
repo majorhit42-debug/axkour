@@ -2,6 +2,20 @@ extends Node3D
 
 @export var player_scene: PackedScene
 
+const CPU_RACER_SCENE := preload("res://scenes/racer/cpu_racer.tscn")
+const PLAYER_RACER_NAME := "You"
+const FINISH_Z := 126.0
+
+# One entry per CPU racer. A list from day one so growing the pack is a data change.
+# quiz_accuracy is deliberately high on a solo bot: a bad roll at the Lego gate would
+# otherwise eliminate it seconds in and leave the player racing alone.
+const BOTS := [
+	{"name": "Turbo", "quiz_accuracy": 0.75, "hazard_awareness": 0.8, "speed_jitter": 0.4, "x": 1.5},
+]
+
+var _player: Node3D
+var _player_finished: bool = false
+
 const PINK    := Color(1.0,   0.769, 0.847)
 const MINT    := Color(0.769, 0.941, 0.847)
 const BLUE    := Color(0.769, 0.863, 0.941)
@@ -9,14 +23,43 @@ const LAVENDER := Color(0.863, 0.769, 0.941)
 const YELLOW  := Color(1.0,   0.941, 0.769)
 
 func _ready() -> void:
+	RaceState.reset_race()
 	_spawn_player()
+	_spawn_bots()
 	_spawn_props()
 
 func _spawn_player() -> void:
 	var player := player_scene.instantiate()
+	# Position BEFORE add_child: a body parented at the origin is registered there for
+	# one physics frame, and with a bot spawning alongside, the server resolves that
+	# shared-origin overlap by launching one racer on top of the other.
+	player.position = $PlayerStart.position
 	add_child(player)
-	player.global_position = $PlayerStart.global_position
 	player.respawn_position = $PlayerStart.global_position
+	_player = player
+	RaceState.register_racer(PLAYER_RACER_NAME)
+
+func _spawn_bots() -> void:
+	var route: RacerRoute = $RacerRoute
+	for bot in BOTS:
+		var racer := CPU_RACER_SCENE.instantiate()
+		racer.racer_name = bot.name
+		racer.quiz_accuracy = bot.quiz_accuracy
+		racer.hazard_awareness = bot.hazard_awareness
+		racer.speed_jitter = bot.speed_jitter
+		racer.position = $PlayerStart.position + Vector3(bot.x, 0, 0)
+		add_child(racer)
+		racer.set_route(route)
+
+func _process(_delta: float) -> void:
+	_check_player_finish()
+
+func _check_player_finish() -> void:
+	if _player_finished or _player == null or not is_instance_valid(_player):
+		return
+	if _player.global_position.z >= FINISH_Z:
+		_player_finished = true
+		RaceState.report_finished(PLAYER_RACER_NAME)
 
 func _spawn_props() -> void:
 	# Lollipops

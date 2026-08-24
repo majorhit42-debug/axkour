@@ -199,12 +199,32 @@ axkour/
 - **Theme:** pastel candyland — soft pink/mint/blue/lavender/yellow platforms, peach-pink procedural sky, warm white sun
 - **Section 1 — Sweet Start (z=0–40):** 6 floating 4×4 pastel platforms with 3.5-unit gaps and slight Y variation (0/0.5 alternating)
 - **Section 2 — The Lego Gate (z=44–60):** single QuizGate with question_id `q04` (When were Legos invented? — 4-answer, added in prompt 14); wide 20×4 reconverge platform to catch landing from any fork
-- **Section 3 — Sprinkle Steps (z=68–89):** 8 individual HazardTile stepping stones, 3 red / 5 safe, 3-unit spacing, zigzag layout
-- **Section 4 — The Sprinkle Floor (z=96–122):** 5×6 RedTileGrid (prompt pattern: ~8 red tiles, navigable safe path), exit platform
+- **Section 3 — Sprinkle Steps (z=68–89):** 8 individual HazardTile stepping stones forming a contiguous safe zigzag line, plus 3 red decoy tiles offset a tile-width to the side (fixed 2026-08-24 — see Level 02 fixes)
+- **Section 4 — The Sprinkle Floor (z=96–122):** 5×10 RedTileGrid (extended from 5×6 on 2026-08-24 to close an unjumpable void), navigable safe path, exit platform
 - **Section 5 — Finish (z=128):** bright-emission blue 10×6 finish platform, gold FINISH! label, ReturnToHubPortal (orange archway)
 - **Candyland props** built programmatically via `CandylandProps` static helper (`scripts/candyland_props.gd`): giant lollipops (5), giant donuts (6), cotton candy clouds (6) — all from Godot primitives, no external models
 - **Hub integration:** Level02Portal at (−12, 0, 20) with pastel pink glow and "LEVEL 02 — FROSTING FALLS" label; sits to the left of Level01Portal on the north wall
 - `scripts/candyland_props.gd` — reusable static factory for sweet-themed level decoration
+
+### CPU Racer (prompt 16 — 2026-08-24)
+- **`racer` vs `player` groups** — hazards now detect `"racer"` (player **and** bots); coins, portals and pedestals stay `"player"`-only. Both racer types implement `die()` differently: the player runs the YOU DIED/hub flow, a bot is eliminated. Adding bots to the `"player"` group instead would have made a bot touching an electric tile yank the human player to the hub.
+- **`CharacterRig`** (`scripts/character_rig.gd`) — static helpers for the shared X Bot rig (mesh/skeleton lookup, head hat mount, skin + hat application), extracted from `player.gd` so bots get identical handling without inheriting input/camera code. Bots never read `ItemInventory` (that's the player's gear) — they roll random cosmetics from the same catalog.
+- **`CpuRacer`** (`scenes/racer/cpu_racer.tscn`) — CharacterBody3D, same capsule and X Bot mesh, no camera, billboarded name tag. Per-bot `quiz_accuracy` / `hazard_awareness` / `speed_jitter` knobs are the whole personality system.
+- **Navigation is waypoint steering, not `NavigationAgent3D`** — a navmesh can't express a jump across a void, and these levels are floating platforms with gaps. `RacerRoute` holds a `PackedVector3Array` of points plus gate indices/paths.
+- **Jumping is geometry-driven**: raycast ~0.45 ahead for missing floor, then a jump velocity scaled to the distance being cleared (a fixed-strength jump overshoots the stepping stones). `GAP_PROBE_AHEAD` must stay small — the bot launches from wherever it detects the gap, so probing far ahead throws away range.
+- **Waypoints only advance while grounded.** Advancing mid-air let the bot claim a stone it hadn't landed on, retarget the next one, curve away in flight and land in the gap.
+- **Quiz gates**: the bot picks a fork on approach but holds the centre line until within 9 units, runs to the platform corner nearest its fork (`_safe_lateral_x()` raycasts to find how far it can shift and still have floor), retargets the fork at the moment of takeoff, then carries the fork's x straight across the gap instead of converging mid-jump.
+- **Blunders** (`hazard_awareness`) are rolled once on entering a tightly-spaced section, not per waypoint — a per-point roll across a 14-point tile grid made death certain.
+- **Spawn positions are set BEFORE `add_child`** — a body parented at the origin is registered there for one physics frame, and the server resolves the shared-origin overlap by launching one racer on top of the other.
+- **`RaceState` autoload** (`scripts/race_state.gd`) — tracks who's still running, `racer_eliminated` / `racer_finished` signals; HUD shows a callout and the player's placement. Not a round manager yet.
+- Level 02 has one bot ("Turbo", `quiz_accuracy` 0.75) defined in a `BOTS` list in `level_02.gd` — growing the pack is a data change. Level 01 has no route yet.
+- **Bot verification is headless**: a temporary scene run via `godot --headless res://<scene>.tscn` (autoloads only exist when the project's main loop runs — `--script` mode can't see them). Current bot completes level_02 in ~22s.
+
+### Level 02 fixes (2026-08-24)
+Three blocking bugs, all invisible until the quiz gate was fixed — the gate blocked the level at z=52, so sections 3–5 had never been reachable:
+- **Quiz forks overlapped** (see Quiz Gates above) — every answer exploded.
+- **9-unit unjumpable void** between the sprinkle floor and the exit platform: the grid was 6 rows at pitch 2 (ending z=111) while ExitPlatform sits at z=120–124. Grid extended to 10 rows, safe path re-verified.
+- **Stepping stones had no safe path**: Stone6 (z=83) and Stone7 (z=86) were both red, leaving a 9-unit gap between safe tiles, and a tile's detection area explodes on contact. The 8 stones are now a contiguous safe line (worst hop 4.24) with three red decoys placed a tile-width to the side.
 
 ---
 
@@ -219,7 +239,7 @@ Movement, quiz gates, Don't Touch Red, deployed to Vercel.
 - First cosmetics: basic humanoid model (replaces capsule), hat slot, body color tint
 
 ### v0.3 — Combat (~3 prompts)
-- CPU opponent bots running the course (simple path-followers first)
+- ~~CPU opponent bots running the course (simple path-followers first)~~ ✓ First bot done (prompt 16); remaining: multiple bots, level_01 route, round/voting layer
 - Slap mechanic — short-range push, lethal if target falls — unlocked via store
 - Balloons as area attack item — balloon drop/throw is implemented (v1 toy); AOE damage to nearby characters is the v0.3 addition (uses the `placer` field on `balloon.gd`)
 

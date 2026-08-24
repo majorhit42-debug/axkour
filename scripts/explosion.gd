@@ -84,7 +84,9 @@ func _shake_camera() -> void:
 			p.shake_camera(SHAKE_INTENSITY, SHAKE_DURATION)
 
 func _knockback_players() -> void:
-	for p in get_tree().get_nodes_in_group("player"):
+	# "racer" not "player": CPU racers get launched by their own wrong answer too.
+	# Camera shake above stays player-only.
+	for p in get_tree().get_nodes_in_group("racer"):
 		var dist := global_position.distance_to(p.global_position)
 		if dist <= KNOCKBACK_RADIUS:
 			var dir: Vector3 = (p.global_position - global_position).normalized()

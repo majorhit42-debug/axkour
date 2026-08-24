@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://bcpuracer001"]
+
+[ext_resource type="Script" path="res://scripts/cpu_racer.gd" id="1_cpu_racer"]
+[ext_resource type="PackedScene" uid="uid://k3xvirfcwoai" path="res://assets/models/x_bot.fbx" id="2_xbot_mesh"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1"]
+radius = 0.35
+height = 1.8
+
+[node name="CpuRacer" type="CharacterBody3D" groups=["racer"]]
+script = ExtResource("1_cpu_racer")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_1")
+
+[node name="CharacterMesh" parent="." instance=ExtResource("2_xbot_mesh")]
+position = Vector3(0, -0.9, 0)
+
+[node name="NameLabel" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+billboard = 1
+pixel_size = 0.008
+font_size = 48
+outline_size = 8
+modulate = Color(1, 1, 1, 1)
+outline_modulate = Color(0, 0, 0, 1)
+text = "CPU"

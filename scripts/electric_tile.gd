@@ -72,7 +72,7 @@ func flash_arc_to(other_pos: Vector3, duration: float) -> void:
 	get_tree().create_timer(duration).timeout.connect(arc.queue_free)
 
 func _on_player_entered(body: Node3D) -> void:
-	if _triggered or not body.is_in_group("player"):
+	if _triggered or not body.is_in_group("racer"):
 		return
 	_triggered = true
 	_electrocute(body)
