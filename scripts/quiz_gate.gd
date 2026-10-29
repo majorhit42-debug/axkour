@@ -144,10 +144,16 @@ func _build_platform(answer_data: Dictionary, x: float, width: float) -> void:
 	label.position = Vector3(0, 3, 0)
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.pixel_size = 0.012
-	label.font_size = 64
+	# Smaller text on the narrow 4-answer forks so a long word like "Noclipping"
+	# still fits on one line once the label wraps to the fork's width.
+	label.font_size = 64 if width >= 5.0 else 46
 	label.outline_size = 8
 	label.outline_modulate = Color(0, 0, 0, 1)
 	label.text = answer_data.text
+	# Wrap to the fork's width: on a 4-answer gate forks are only 5 apart, and a long
+	# answer ("Noclipping out of reality") on one line runs into its neighbours.
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD
+	label.width = (width - 0.3) / label.pixel_size
 	platform.add_child(label)
 
 	$ForkContainer.add_child(platform)
