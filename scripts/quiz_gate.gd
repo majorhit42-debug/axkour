@@ -3,6 +3,10 @@ class_name QuizGate
 
 const EXPLOSION_SCENE := preload("res://scenes/effects/explosion.tscn")
 const QUESTIONS_PATH := "res://assets/questions.json"
+# Only racers on the exploding fork itself. Neighbouring forks are >= 3 units from a
+# fork's centre at their nearest edge; anyone on the wrong fork falls when it is freed
+# regardless, so the knockback is just the dramatic exit.
+const KNOCKBACK_RADIUS := 2.8
 
 @export var question_id: String = ""
 # When set, the gate ignores question_id and picks a random question tagged with this
@@ -188,5 +192,6 @@ func _trigger_wrong(platform: StaticBody3D) -> void:
 
 func _spawn_explosion(pos: Vector3) -> void:
 	var explosion := EXPLOSION_SCENE.instantiate()
+	explosion.knockback_radius = KNOCKBACK_RADIUS
 	get_tree().current_scene.add_child(explosion)
 	explosion.global_position = pos + Vector3(0, 0.5, 0)

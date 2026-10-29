@@ -4,8 +4,12 @@ const SHAKE_INTENSITY := 0.4
 const SHAKE_DURATION := 0.5
 const KNOCKBACK_FORCE := 30.0
 const KNOCKBACK_UP := 40.0
-const KNOCKBACK_RADIUS := 8.0
 const LIFETIME := 1.5
+
+# Who gets launched. 8 suits a lone hazard tile; spawners whose hazards sit closer
+# together than that (quiz forks are 5 apart) pass a smaller value, or a wrong answer
+# also launches everyone standing on the neighbouring correct fork.
+var knockback_radius: float = 8.0
 
 func _ready() -> void:
 	call_deferred("_start_explosion")
@@ -88,7 +92,7 @@ func _knockback_players() -> void:
 	# Camera shake above stays player-only.
 	for p in get_tree().get_nodes_in_group("racer"):
 		var dist := global_position.distance_to(p.global_position)
-		if dist <= KNOCKBACK_RADIUS:
+		if dist <= knockback_radius:
 			var dir: Vector3 = (p.global_position - global_position).normalized()
 			var force: Vector3 = Vector3(dir.x * KNOCKBACK_FORCE, KNOCKBACK_UP, dir.z * KNOCKBACK_FORCE)
 			if p.has_method("apply_knockback"):
