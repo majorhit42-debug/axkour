@@ -27,7 +27,7 @@ var _balloon_button_pressed: bool = false
 @onready var spring_arm: SpringArm3D = $CameraPivot/SpringArm3D
 @onready var _camera: Camera3D = $CameraPivot/SpringArm3D/Camera3D
 var _body_mesh: MeshInstance3D
-var _hat_mount: Node3D
+var _costume_mounts: Dictionary = {}
 var _character_mesh: Node3D
 var _camera_origin: Vector3
 var _shake_timer := 0.0
@@ -40,33 +40,33 @@ func _ready() -> void:
 	_camera_origin = _camera.position
 	_character_mesh = $CharacterMesh
 	_setup_body_mesh()
-	_setup_hat_mount()
+	_setup_costume_mounts()
 	ItemInventory.equipment_changed.connect(_on_equipment_changed)
 	_apply_skin()
-	_apply_hat()
+	_apply_costume()
 
 func _setup_body_mesh() -> void:
 	_body_mesh = CharacterRig.find_first_mesh(_character_mesh)
 	if not _body_mesh:
 		push_warning("Player: MeshInstance3D not found in CharacterMesh")
 
-func _setup_hat_mount() -> void:
-	_hat_mount = CharacterRig.create_hat_mount(_character_mesh)
+func _setup_costume_mounts() -> void:
+	_costume_mounts = CharacterRig.create_costume_mounts(_character_mesh)
 
 func _on_equipment_changed(slot: String, _id: String) -> void:
 	if slot == "skin":
 		_apply_skin()
 	elif slot == "hat":
-		_apply_hat()
+		_apply_costume()
 
-func _apply_hat() -> void:
+func _apply_costume() -> void:
 	var hat_id := ItemInventory.get_equipped("hat")
 	if hat_id.is_empty():
-		CharacterRig.apply_hat(_hat_mount, "", Color.WHITE)
+		CharacterRig.apply_costume(_costume_mounts, "", Color.WHITE)
 		return
 	var item := ItemInventory.get_item(hat_id)
 	var col_arr = item.get("color", [1, 1, 1])
-	CharacterRig.apply_hat(_hat_mount, item.get("hat_type", ""), Color(col_arr[0], col_arr[1], col_arr[2]))
+	CharacterRig.apply_costume(_costume_mounts, item.get("hat_type", ""), Color(col_arr[0], col_arr[1], col_arr[2]))
 
 func _apply_skin() -> void:
 	var col := Color(1, 1, 1)

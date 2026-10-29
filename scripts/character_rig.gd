@@ -47,6 +47,62 @@ static func create_hat_mount(character_mesh: Node) -> Node3D:
 	bone_attach.add_child(hat_offset)
 	return hat_offset
 
+# Costume mounts: head (hat), chest (torso piece), and both ankles (footwear).
+# Returns {"head", "torso", "foot_l", "foot_r"} -> Node3D; missing bones are skipped.
+static func create_costume_mounts(character_mesh: Node) -> Dictionary:
+	var mounts := {}
+	var head := create_hat_mount(character_mesh)
+	if head:
+		mounts["head"] = head
+	var skeleton := find_skeleton(character_mesh)
+	if not skeleton:
+		return mounts
+	for entry in [["torso", "Spine2"], ["foot_l", "LeftFoot"], ["foot_r", "RightFoot"]]:
+		var mount := create_bone_mount(skeleton, entry[1], entry[0].capitalize().replace(" ", "") + "Mount")
+		if mount:
+			mounts[entry[0]] = mount
+	return mounts
+
+# Attaches a node to a bone with the bone's rest rotation cancelled out, so children
+# can be authored in character space (Y up, +Z forward) no matter how the bone is
+# oriented — Mixamo foot bones point down-and-forward, for example. The node still
+# follows the bone when it moves.
+static func create_bone_mount(skeleton: Skeleton3D, bone: String, mount_name: String) -> Node3D:
+	var idx := skeleton.find_bone("mixamorig_" + bone)
+	if idx < 0:
+		idx = skeleton.find_bone("mixamorig:" + bone)
+	if idx < 0:
+		push_warning("CharacterRig: bone %s not found" % bone)
+		return null
+	var attach := BoneAttachment3D.new()
+	attach.name = mount_name + "Attach"
+	attach.bone_idx = idx
+	skeleton.add_child(attach)
+	var mount := Node3D.new()
+	mount.name = mount_name
+	mount.basis = skeleton.get_bone_global_rest(idx).basis.orthonormalized().inverse()
+	attach.add_child(mount)
+	return mount
+
+# Dresses a racer in a full costume (hat + torso + footwear), keyed by hat_type.
+# An empty hat_type strips everything.
+static func apply_costume(mounts: Dictionary, hat_type: String, hat_color: Color) -> void:
+	for key in mounts:
+		for child in mounts[key].get_children():
+			child.queue_free()
+	if hat_type.is_empty():
+		return
+	if mounts.has("head"):
+		for mi in HatBuilder.make_meshes(hat_type, hat_color, 1.0):
+			mounts["head"].add_child(mi)
+	if mounts.has("torso"):
+		for mi in CostumeBuilder.make_torso(hat_type):
+			mounts["torso"].add_child(mi)
+	for key in ["foot_l", "foot_r"]:
+		if mounts.has(key):
+			for mi in CostumeBuilder.make_foot(hat_type):
+				mounts[key].add_child(mi)
+
 static func apply_skin_color(body_mesh: MeshInstance3D, color: Color) -> void:
 	if not body_mesh:
 		return
@@ -54,13 +110,3 @@ static func apply_skin_color(body_mesh: MeshInstance3D, color: Color) -> void:
 	mat.albedo_color = color
 	mat.roughness = 0.7
 	body_mesh.set_surface_override_material(0, mat)
-
-static func apply_hat(hat_mount: Node3D, hat_type: String, color: Color) -> void:
-	if not hat_mount:
-		return
-	for child in hat_mount.get_children():
-		child.queue_free()
-	if hat_type.is_empty():
-		return
-	for mi in HatBuilder.make_meshes(hat_type, color, 1.0):
-		hat_mount.add_child(mi)

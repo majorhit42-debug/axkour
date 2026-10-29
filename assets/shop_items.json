@@ -38,7 +38,7 @@
     },
     {
       "id": "hat_tophat",
-      "name": "Top Hat",
+      "name": "Top Hat Tux",
       "type": "equippable",
       "slot": "hat",
       "price": 5,
@@ -47,7 +47,7 @@
     },
     {
       "id": "hat_party",
-      "name": "Party Hat",
+      "name": "Party Outfit",
       "type": "equippable",
       "slot": "hat",
       "price": 3,
@@ -56,7 +56,7 @@
     },
     {
       "id": "hat_cowboy",
-      "name": "Cowboy Hat",
+      "name": "Cowboy Outfit",
       "type": "equippable",
       "slot": "hat",
       "price": 4,

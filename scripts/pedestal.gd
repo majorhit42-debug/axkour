@@ -2,6 +2,7 @@ extends StaticBody3D
 class_name Pedestal
 
 const SPARKLE_SCENE := preload("res://scenes/effects/sparkle.tscn")
+const DISPLAY_SCALE := 0.7
 
 @export var item_id: String = ""
 
@@ -48,9 +49,28 @@ func _setup_display() -> void:
 		mi.set_surface_override_material(0, mat)
 		$DisplayItem.add_child(mi)
 	elif slot == "hat":
-		var hat_type: String = item.get("hat_type", "")
-		for mi in HatBuilder.make_meshes(hat_type, color, 0.7):
-			$DisplayItem.add_child(mi)
+		_build_costume_display(item.get("hat_type", ""), color)
+
+# The whole outfit on an invisible mannequin: hat on top, torso piece in the
+# middle, a pair of boots at the bottom resting on the stand.
+func _build_costume_display(hat_type: String, color: Color) -> void:
+	var s := DISPLAY_SCALE
+	var hat := Node3D.new()
+	hat.position = Vector3(0, 0.3, 0)
+	for mi in HatBuilder.make_meshes(hat_type, color, s):
+		hat.add_child(mi)
+	$DisplayItem.add_child(hat)
+	var torso := Node3D.new()
+	torso.position = Vector3(0, -0.12, 0)
+	for mi in CostumeBuilder.make_torso(hat_type, s):
+		torso.add_child(mi)
+	$DisplayItem.add_child(torso)
+	for x in [-0.07, 0.07]:
+		var foot := Node3D.new()
+		foot.position = Vector3(x, -0.42, 0)
+		for mi in CostumeBuilder.make_foot(hat_type, s):
+			foot.add_child(mi)
+		$DisplayItem.add_child(foot)
 
 func _refresh_label() -> void:
 	var item := ItemInventory.get_item(item_id)

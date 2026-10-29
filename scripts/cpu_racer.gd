@@ -43,7 +43,7 @@ var _target: Vector3
 var _has_target: bool = false
 var _speed: float = BASE_SPEED
 var _body_mesh: MeshInstance3D
-var _hat_mount: Node3D
+var _costume_mounts: Dictionary = {}
 var _character_mesh: Node3D
 var _stuck_timer: float = 0.0
 var _last_pos: Vector3
@@ -61,7 +61,7 @@ var _skipped_in_section: bool = false
 func _ready() -> void:
 	_character_mesh = $CharacterMesh
 	_body_mesh = CharacterRig.find_first_mesh(_character_mesh)
-	_hat_mount = CharacterRig.create_hat_mount(_character_mesh)
+	_costume_mounts = CharacterRig.create_costume_mounts(_character_mesh)
 	_speed = BASE_SPEED + randf_range(-speed_jitter, speed_jitter)
 	_last_pos = global_position
 	$NameLabel.text = racer_name
@@ -81,11 +81,11 @@ func _apply_random_cosmetics() -> void:
 	if not skins.is_empty():
 		var c = skins[randi() % skins.size()].get("color", [1, 1, 1])
 		CharacterRig.apply_skin_color(_body_mesh, Color(c[0], c[1], c[2]))
-	# Not every bot wears a hat.
+	# Not every bot wears a costume.
 	if not hats.is_empty() and randf() < 0.7:
 		var hat: Dictionary = hats[randi() % hats.size()]
 		var hc = hat.get("color", [1, 1, 1])
-		CharacterRig.apply_hat(_hat_mount, hat.get("hat_type", ""), Color(hc[0], hc[1], hc[2]))
+		CharacterRig.apply_costume(_costume_mounts, hat.get("hat_type", ""), Color(hc[0], hc[1], hc[2]))
 
 # Mesh only — bots have no camera. Same signature as the player's so spawn code can
 # treat every racer the same.
