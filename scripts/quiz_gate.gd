@@ -5,6 +5,9 @@ const EXPLOSION_SCENE := preload("res://scenes/effects/explosion.tscn")
 const QUESTIONS_PATH := "res://assets/questions.json"
 
 @export var question_id: String = ""
+# When set, the gate ignores question_id and picks a random question tagged with this
+# "pool" in questions.json each run.
+@export var question_pool: String = ""
 @export var explode_delay: float = 0.3
 
 func _ready() -> void:
@@ -22,7 +25,16 @@ func _load_question() -> Dictionary:
 	if typeof(parsed) != TYPE_DICTIONARY:
 		push_error("QuizGate: cannot parse questions JSON")
 		return {}
-	for q in parsed.get("questions", []):
+	var questions: Array = parsed.get("questions", [])
+	if question_pool != "":
+		var pool: Array = questions.filter(func(q): return q.get("pool", "") == question_pool)
+		if pool.is_empty():
+			push_error("QuizGate: no questions in pool: %s" % question_pool)
+			return {}
+		var picked: Dictionary = pool[randi() % pool.size()]
+		question_id = picked.get("id", "")
+		return picked
+	for q in questions:
 		if q.get("id", "") == question_id:
 			return q
 	push_error("QuizGate: no question found for id: %s" % question_id)

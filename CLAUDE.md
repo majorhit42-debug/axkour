@@ -355,17 +355,10 @@ Real but manageable gotchas. Worth reading before deploying:
 
 ## Prompt Workflow
 
-(Same pattern as Axerooms.)
+**As of 2026-10-29, work is prompted and executed directly in the Claude Code chat** — no more writing prompt files into `prompts/ready/`. Todd (and Axel) describe the feature in the conversation; Claude Code plans, builds, and verifies it there.
 
-- `prompts/ready/` — queued prompts, ready to be picked up
-- `prompts/done/` — completed prompts (moved here after finishing)
-
-When Todd says "pick up the next prompt":
-1. List files in `prompts/ready/`
-2. Open and read the first one
-3. Follow the instructions in the prompt
-4. When complete, move the file to `prompts/done/`
-5. Update Current Features and Planned Features in this file
+- `prompts/done/` — archive of the old file-based prompts (01–19); kept for history, no longer added to
+- After each completed feature: update Current Features and Planned Features in this file, then commit
 
 ---
 

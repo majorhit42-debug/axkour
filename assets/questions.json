@@ -3,26 +3,149 @@
     {
       "id": "q01_game_created",
       "text": "When was this game created?",
-      "answers": ["May 9, 2026", "August 2025"],
+      "answers": [
+        "May 9, 2026",
+        "August 2025"
+      ],
       "correct_index": 0
     },
     {
       "id": "q02_axels_color",
       "text": "What is Axel's favorite color?",
-      "answers": ["Blue", "Red"],
+      "answers": [
+        "Blue",
+        "Red"
+      ],
       "correct_index": 0
     },
     {
       "id": "q03_axerooms_created",
       "text": "When was Axerooms created?",
-      "answers": ["March 2026", "October 2024"],
+      "answers": [
+        "March 2026",
+        "October 2024"
+      ],
       "correct_index": 0
     },
     {
       "id": "q04",
       "question": "When were Legos invented?",
       "correct_answer": "1932",
-      "wrong_answers": ["1965", "1908", "1979"]
+      "wrong_answers": [
+        "1965",
+        "1908",
+        "1979"
+      ]
+    },
+    {
+      "id": "br01",
+      "pool": "backrooms",
+      "question": "How do you get into the Backrooms?",
+      "correct_answer": "Noclipping out of reality",
+      "wrong_answers": [
+        "Opening a fridge",
+        "Sneezing three times",
+        "Walking backwards"
+      ]
+    },
+    {
+      "id": "br02",
+      "pool": "backrooms",
+      "question": "What's the only safe drink in the Backrooms?",
+      "correct_answer": "Almond Water",
+      "wrong_answers": [
+        "Orange Juice",
+        "Chocolate Milk",
+        "Lemonade"
+      ]
+    },
+    {
+      "id": "br03",
+      "pool": "backrooms",
+      "question": "What color is the wallpaper in Level 0?",
+      "correct_answer": "Yellow",
+      "wrong_answers": [
+        "Blue",
+        "Green",
+        "Purple"
+      ]
+    },
+    {
+      "id": "br04",
+      "pool": "backrooms",
+      "question": "What sound do the lights in Level 0 make?",
+      "correct_answer": "A constant buzz",
+      "wrong_answers": [
+        "Birds chirping",
+        "Jazz music",
+        "Total silence"
+      ]
+    },
+    {
+      "id": "br05",
+      "pool": "backrooms",
+      "question": "What's another name for Level 0?",
+      "correct_answer": "The Lobby",
+      "wrong_answers": [
+        "The Basement",
+        "The Attic",
+        "The Garage"
+      ]
+    },
+    {
+      "id": "tr01",
+      "pool": "trivia",
+      "question": "What's the largest planet?",
+      "correct_answer": "Jupiter",
+      "wrong_answers": [
+        "Saturn",
+        "Earth",
+        "Mars"
+      ]
+    },
+    {
+      "id": "tr02",
+      "pool": "trivia",
+      "question": "How many legs does a spider have?",
+      "correct_answer": "8",
+      "wrong_answers": [
+        "6",
+        "10",
+        "12"
+      ]
+    },
+    {
+      "id": "tr03",
+      "pool": "trivia",
+      "question": "What's the fastest land animal?",
+      "correct_answer": "Cheetah",
+      "wrong_answers": [
+        "Lion",
+        "Horse",
+        "Ostrich"
+      ]
+    },
+    {
+      "id": "tr04",
+      "pool": "trivia",
+      "question": "What gas do plants breathe in?",
+      "correct_answer": "Carbon dioxide",
+      "wrong_answers": [
+        "Oxygen",
+        "Helium",
+        "Nitrogen"
+      ]
+    },
+    {
+      "id": "tr05",
+      "pool": "trivia",
+      "question": "How many continents are there?",
+      "correct_answer": "7",
+      "wrong_answers": [
+        "5",
+        "6",
+        "9"
+      ]
     }
   ]
 }
