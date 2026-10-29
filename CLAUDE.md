@@ -35,18 +35,25 @@ axkour/
 │   ├── player/
 │   │   └── player.tscn        # CharacterBody3D — capsule + spring-arm camera
 │   ├── levels/
-│   │   └── level_01.tscn      # Full level: jump platforms → quiz gates → hazard tiles → finish
+│   │   ├── level_01.tscn      # Test bed: jump platforms → quiz gates → hazard tiles → finish
+│   │   ├── level_02.tscn      # Frosting Falls
+│   │   ├── level_03.tscn      # The Axerooms (Backrooms) — see Current Features
+│   │   ├── gold_rooms.tscn    # Level 03 bonus stage (instanced inside level_03)
+│   │   └── level_door.tscn    # Swinging door emitting entered(); EXIT / bonus door
 │   ├── quiz/
 │   │   └── quiz_gate.tscn     # Reusable fork gate with question/answer labels
 │   └── hazard/
 │       ├── hazard_tile.tscn   # 2×2 tile; red = lethal after 0.3s
-│       └── red_tile_grid.tscn # Pattern-driven grid of HazardTiles
+│       ├── red_tile_grid.tscn # Pattern-driven grid of HazardTiles
+│       ├── flicker_platform.tscn # Solid only while its lamp is on (level_03)
+│       └── monster_cannon.tscn   # Wall monster that spits goo_ball.tscn (level_03)
 ├── scripts/
 │   ├── player.gd              # Movement, camera, respawn
 │   ├── level.gd               # JSON loading, gate config, player spawn
 │   ├── quiz_gate.gd           # Fork detection, wrong-answer explosion
 │   ├── hazard_tile.gd         # Color assignment, fall-trigger logic
-│   └── red_tile_grid.gd       # Pattern parser → HazardTile spawner
+│   ├── red_tile_grid.gd       # Pattern parser → HazardTile spawner
+│   └── backrooms_props.gd     # Level 03 decoration + code-painted textures
 ├── scenes/
 │   └── effects/
 │       └── explosion.tscn     # Reusable explosion: CPUParticles3D core+embers + OmniLight3D
@@ -56,8 +63,7 @@ axkour/
 │   ├── models/
 │   └── textures/
 └── prompts/
-    ├── ready/                 # Queued prompts
-    └── done/                  # Completed prompts (01, 02, 03)
+    └── done/                  # Archive of the old file-based prompts (01–19)
 ```
 
 ---
@@ -237,6 +243,27 @@ Three blocking bugs, all invisible until the quiz gate was fixed — the gate bl
 - **9-unit unjumpable void** between the sprinkle floor and the exit platform: the grid was 6 rows at pitch 2 (ending z=111) while ExitPlatform sits at z=120–124. Grid extended to 10 rows, safe path re-verified.
 - **Stepping stones had no safe path**: Stone6 (z=83) and Stone7 (z=86) were both red, leaving a 9-unit gap between safe tiles, and a tile's detection area explodes on contact. The 8 stones are now a contiguous safe line (worst hop 4.24) with three red decoys placed a tile-width to the side.
 
+### Level 03 — The Axerooms (2026-10-29)
+- **Theme:** Backrooms Level 0 (Axel's "Axerooms") broken apart and floating in fog — mono-yellow striped wallpaper, damp carpet, drop ceiling with fluorescent panels, endless pillars dropping into the void. `BackroomsProps` (`scripts/backrooms_props.gd`) builds all of it from primitives plus 64×64 textures **painted in code** (triplanar-mapped, no texture files). Platforms in the `.tscn` carry a flat colour and are in the `carpet` / `gold_carpet` groups; `BackroomsProps.dress_groups()` swaps in the textured materials at runtime.
+- **Ceiling is visual only** (no collision) — a solid one would stop quiz-explosion knockback and make the spring-arm camera clip. Its fluorescent panels are one `MultiMesh` (one draw call).
+- The level has a warm **ProceduralSky used only for reflections** (`background_mode` stays a flat colour, `reflected_light_source = Sky`). Without it the metallic coins reflect the dark background and look brown.
+- **Course (+Z, ~190 units):** Lobby (14×10, 6 start spots) → warm-up hops → **Gate 1, Backrooms pool** → **Flicker Hall** → **Gate 2, trivia pool** → **Monster Cannon gauntlet** (3-wide, 48-long catwalk) → Junction (gold door) → **EXIT door = finish line**.
+- **Quiz pools:** `QuizGate.question_pool` picks a random question tagged `"pool": "<name>"` in `questions.json` each run (overrides `question_id`). Pools `backrooms` (br01–br05) and `trivia` (tr01–tr05), all 4-answer.
+- **Flicker Floor** (`scenes/hazard/flicker_platform.tscn`): a 4×4 carpet platform that's solid only while its hanging lamp is on. Cycle `period` 4s, `on_time` 3s, the lamp stutters for the last 0.6s, then the collision turns off and the platform goes see-through. Two groups (`phase` 0 / 2) → neighbours overlap for 1s each cycle, which is the jump window. 6 platforms, 2.5-unit gaps, slight zigzag.
+- **Monster Cannons** (`scenes/hazard/monster_cannon.tscn`): original wall monsters (pale hunched body, glowing eyes, toothed mouth = barrel), built in the `.tscn` from primitives. Fire a `GooBall` along local −Z every 3s; tell = eyes swell + head draws back for 0.7s, then lunge. Goo does knockback (9 sideways, 4 up) — the fall kills. 8 cannons alternate walls 5 apart with phases staggered 0.9s, so the shots ripple down the catwalk. Optional `assets/audio/monster_growl.ogg` / `fluorescent_hum_loop.ogg` are loaded if present.
+- **LevelDoor** (`scenes/levels/level_door.tscn`): swinging door (opens when a racer is within `open_range`), glowing doorway, sign above; emits `entered(body)` and decides nothing itself. No collision on frame/panel. Used for both the EXIT (finish: player → `RaceState.report_finished`, 2s, fade, hub; bot → `exit_level()`) and the gold door (`player_only`).
+- **Gold Rooms** (`scenes/levels/gold_rooms.tscn`): bonus stage at (160, 0, 140) in the **same scene**, hidden by fog — entering is a teleport, so the race keeps running. 30s timer on the HUD (red for the last 5), 5 `BouncePad`s (launch 13 up, player steers in the air), 31 coins incl. bait over a hidden 4×5 electric floor, and the 10-coin **Golden Almond Water** jackpot on top. Time-up or falling out (catch area at y=−6) fades you back to the junction — **not** a death. Electric tiles still kill. One visit per run; the door goes dark after. Bots never go in.
+- **HUD additions:** `HUD.announce()`, `show_bonus_timer()` / `set_bonus_time()` / `hide_bonus_timer()`, `fade_through_black(callable)` (full-screen `Fade` ColorRect, `mouse_filter = IGNORE`, survives scene changes).
+- **5 bots** (`BOTS` in `level_03.gd`): Turbo, Smiler, Almond, Wobbles, Buzz. Bots get **collision exceptions with each other** (still collide with the player) — five bots steering for the same centre line otherwise shove each other off the catwalk/flicker platforms.
+- **Bot hold points:** `RacerRoute.wait_indices` / `wait_paths` — the bot stands on the previous point until `node.is_clear_for(bot)` is true, then commits and never re-checks (so it can't stop dead in a cannon lane). Flicker platforms clear when >2s of light is left; cannons clear when >0.8s from firing and no live ball is still coming. A bot that rolls careless (`hazard_awareness`, once per run of hold points) skips at most one wait in that section.
+- Headless verification: 5 perfect bots finish 4/4 runs in ~54s; normal races end with 2–4 finishers.
+- **Hub:** Level03Portal at (12, 0, 20), yellow glow, "LEVEL 03 — THE AXEROOMS".
+- `scenes/levels/level_03.tscn` and `gold_rooms.tscn` were generated by a script (lots of repeated platforms/coins) but are ordinary scenes — edit them in the editor from here on.
+
+### Shared fixes found while building Level 03 (2026-10-29)
+- **Wrong quiz answers launched neighbouring forks:** explosion knockback radius was a fixed 8 but forks are 5 apart, so a bot's wrong answer also launched the player standing on the correct fork. `Explosion.knockback_radius` is now settable; `QuizGate` passes 2.8. Hazard tiles keep 8.
+- **Bots fell short on far forks:** running diagonally to the corner nearest a ±7.5 fork, a bot hit the approach edge before it was lined up, so the jump had to cover all the sideways distance and slow bots clipped the fork's side. Bots now slide along the edge until within 0.5 of the staging x, then jump.
+
 ---
 
 ## Roadmap
@@ -250,7 +277,7 @@ Movement, quiz gates, Don't Touch Red, deployed to Vercel.
 - First cosmetics: basic humanoid model (replaces capsule), hat slot, body color tint
 
 ### v0.3 — Combat (~3 prompts)
-- ~~CPU opponent bots running the course (simple path-followers first)~~ ✓ First bot done (prompt 16); remaining: multiple bots, level_01 route, round/voting layer
+- ~~CPU opponent bots running the course (simple path-followers first)~~ ✓ First bot done (prompt 16); multiple bots done (5 in level_03); remaining: level_01 route, round/voting layer
 - Slap mechanic — short-range push, lethal if target falls — unlocked via store
 - Balloons as area attack item — balloon drop/throw is implemented (v1 toy); AOE damage to nearby characters is the v0.3 addition (uses the `placer` field on `balloon.gd`)
 
@@ -268,6 +295,7 @@ Movement, quiz gates, Don't Touch Red, deployed to Vercel.
 
 ### v0.7 — Real levels & level select (~3–5 prompts)
 - ~~First real level (level_02 Frosting Falls)~~ ✓ Done
+- ~~Level 03 — The Axerooms~~ ✓ Done (2026-10-29)
 - level_01 stays the test bed; remaining work is additional levels and a level select screen
 - Level select screen
 
