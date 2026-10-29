@@ -1,0 +1,159 @@
+[gd_scene format=3 uid="uid://bmonstercann1"]
+
+[ext_resource type="Script" path="res://scripts/monster_cannon.gd" id="1_cannon"]
+
+[sub_resource type="StandardMaterial3D" id="mat_skin"]
+albedo_color = Color(0.86, 0.83, 0.74, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="mat_eye"]
+albedo_color = Color(1, 1, 0.7, 1)
+emission_enabled = true
+emission = Color(1, 0.95, 0.5, 1)
+emission_energy_multiplier = 1.0
+
+[sub_resource type="StandardMaterial3D" id="mat_black"]
+albedo_color = Color(0.02, 0.02, 0.02, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_rim"]
+albedo_color = Color(0.45, 0.18, 0.16, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_tooth"]
+albedo_color = Color(0.96, 0.94, 0.85, 1)
+
+[sub_resource type="CapsuleMesh" id="mesh_torso"]
+radius = 0.65
+height = 3.4
+
+[sub_resource type="CapsuleMesh" id="mesh_arm"]
+radius = 0.15
+height = 3.2
+
+[sub_resource type="SphereMesh" id="mesh_head"]
+radius = 0.8
+height = 1.4
+
+[sub_resource type="SphereMesh" id="mesh_eye"]
+radius = 0.17
+height = 0.34
+
+[sub_resource type="SphereMesh" id="mesh_pupil"]
+radius = 0.07
+height = 0.14
+
+[sub_resource type="TorusMesh" id="mesh_rim"]
+inner_radius = 0.36
+outer_radius = 0.56
+
+[sub_resource type="CylinderMesh" id="mesh_hole"]
+top_radius = 0.4
+bottom_radius = 0.4
+height = 0.4
+
+[sub_resource type="PrismMesh" id="mesh_tooth"]
+size = Vector3(0.13, 0.2, 0.08)
+
+[node name="MonsterCannon" type="Node3D"]
+script = ExtResource("1_cannon")
+
+[node name="Torso" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.3, 0.9)
+rotation = Vector3(-0.5, 0, 0)
+mesh = SubResource("mesh_torso")
+surface_material_override/0 = SubResource("mat_skin")
+
+[node name="ArmL" type="MeshInstance3D" parent="."]
+position = Vector3(-1.05, 0.5, -0.4)
+rotation = Vector3(0.15, 0, -0.22)
+mesh = SubResource("mesh_arm")
+surface_material_override/0 = SubResource("mat_skin")
+
+[node name="ArmR" type="MeshInstance3D" parent="."]
+position = Vector3(1.05, 0.5, -0.4)
+rotation = Vector3(0.15, 0, 0.22)
+mesh = SubResource("mesh_arm")
+surface_material_override/0 = SubResource("mat_skin")
+
+[node name="HeadPivot" type="Node3D" parent="."]
+
+[node name="Head" type="MeshInstance3D" parent="HeadPivot"]
+position = Vector3(0, 1.45, -0.35)
+scale = Vector3(1.25, 1, 1)
+mesh = SubResource("mesh_head")
+surface_material_override/0 = SubResource("mat_skin")
+
+[node name="EyeL" type="MeshInstance3D" parent="HeadPivot"]
+position = Vector3(-0.4, 1.88, -0.98)
+mesh = SubResource("mesh_eye")
+surface_material_override/0 = SubResource("mat_eye")
+
+[node name="EyeR" type="MeshInstance3D" parent="HeadPivot"]
+position = Vector3(0.4, 1.88, -0.98)
+mesh = SubResource("mesh_eye")
+surface_material_override/0 = SubResource("mat_eye")
+
+[node name="PupilL" type="MeshInstance3D" parent="HeadPivot"]
+position = Vector3(-0.4, 1.88, -1.14)
+mesh = SubResource("mesh_pupil")
+surface_material_override/0 = SubResource("mat_black")
+
+[node name="PupilR" type="MeshInstance3D" parent="HeadPivot"]
+position = Vector3(0.4, 1.88, -1.14)
+mesh = SubResource("mesh_pupil")
+surface_material_override/0 = SubResource("mat_black")
+
+[node name="MouthRim" type="MeshInstance3D" parent="HeadPivot"]
+position = Vector3(0, 1.15, -1.05)
+rotation = Vector3(1.5708, 0, 0)
+mesh = SubResource("mesh_rim")
+surface_material_override/0 = SubResource("mat_rim")
+
+[node name="MouthHole" type="MeshInstance3D" parent="HeadPivot"]
+position = Vector3(0, 1.15, -0.95)
+rotation = Vector3(1.5708, 0, 0)
+mesh = SubResource("mesh_hole")
+surface_material_override/0 = SubResource("mat_black")
+
+[node name="Tooth1" type="MeshInstance3D" parent="HeadPivot"]
+position = Vector3(0.398, 1.380, -1.12)
+rotation = Vector3(0, 0, 2.0944)
+mesh = SubResource("mesh_tooth")
+surface_material_override/0 = SubResource("mat_tooth")
+
+[node name="Tooth2" type="MeshInstance3D" parent="HeadPivot"]
+position = Vector3(0.000, 1.610, -1.12)
+rotation = Vector3(0, 0, 3.1416)
+mesh = SubResource("mesh_tooth")
+surface_material_override/0 = SubResource("mat_tooth")
+
+[node name="Tooth3" type="MeshInstance3D" parent="HeadPivot"]
+position = Vector3(-0.398, 1.380, -1.12)
+rotation = Vector3(0, 0, 4.1888)
+mesh = SubResource("mesh_tooth")
+surface_material_override/0 = SubResource("mat_tooth")
+
+[node name="Tooth4" type="MeshInstance3D" parent="HeadPivot"]
+position = Vector3(-0.398, 0.920, -1.12)
+rotation = Vector3(0, 0, 5.2360)
+mesh = SubResource("mesh_tooth")
+surface_material_override/0 = SubResource("mat_tooth")
+
+[node name="Tooth5" type="MeshInstance3D" parent="HeadPivot"]
+position = Vector3(-0.000, 0.690, -1.12)
+rotation = Vector3(0, 0, 6.2832)
+mesh = SubResource("mesh_tooth")
+surface_material_override/0 = SubResource("mat_tooth")
+
+[node name="Tooth6" type="MeshInstance3D" parent="HeadPivot"]
+position = Vector3(0.398, 0.920, -1.12)
+rotation = Vector3(0, 0, 7.3304)
+mesh = SubResource("mesh_tooth")
+surface_material_override/0 = SubResource("mat_tooth")
+
+[node name="Muzzle" type="Marker3D" parent="HeadPivot"]
+position = Vector3(0, 1.15, -1.5)
+
+[node name="Growl" type="AudioStreamPlayer3D" parent="."]
+position = Vector3(0, 1.4, -0.8)
+volume_db = -6.0
+max_distance = 14.0

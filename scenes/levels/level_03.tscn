@@ -1,0 +1,318 @@
+[gd_scene format=3 uid="uid://blevel03scn01"]
+
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://scripts/level_03.gd" id="2_script"]
+[ext_resource type="PackedScene" path="res://scenes/quiz/quiz_gate.tscn" id="3_gate"]
+[ext_resource type="PackedScene" path="res://scenes/hazard/flicker_platform.tscn" id="4_flicker"]
+[ext_resource type="PackedScene" path="res://scenes/hazard/monster_cannon.tscn" id="5_cannon"]
+[ext_resource type="PackedScene" path="res://scenes/levels/level_door.tscn" id="6_door"]
+[ext_resource type="PackedScene" path="res://scenes/levels/gold_rooms.tscn" id="7_gold"]
+[ext_resource type="Script" path="res://scripts/racer_route.gd" id="8_route"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
+sky_top_color = Color(1, 0.95, 0.75, 1)
+sky_horizon_color = Color(1, 0.9, 0.6, 1)
+ground_bottom_color = Color(0.8, 0.7, 0.4, 1)
+ground_horizon_color = Color(1, 0.9, 0.6, 1)
+
+[sub_resource type="Sky" id="Sky_1"]
+sky_material = SubResource("Sky_mat")
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 1
+sky = SubResource("Sky_1")
+reflected_light_source = 2
+background_color = Color(0.3, 0.27, 0.15, 1)
+ambient_light_source = 2
+ambient_light_color = Color(1, 0.94, 0.72, 1)
+ambient_light_energy = 0.55
+fog_enabled = true
+fog_light_color = Color(0.42, 0.38, 0.22, 1)
+fog_density = 0.018
+
+[sub_resource type="StandardMaterial3D" id="mat_carpet"]
+albedo_color = Color(0.62, 0.55, 0.36, 1)
+
+[sub_resource type="BoxMesh" id="mesh_14x0_5x10"]
+size = Vector3(14, 0.5, 10)
+
+[sub_resource type="BoxShape3D" id="shape_14x0_5x10"]
+size = Vector3(14, 0.5, 10)
+
+[sub_resource type="BoxMesh" id="mesh_6x0_5x4"]
+size = Vector3(6, 0.5, 4)
+
+[sub_resource type="BoxShape3D" id="shape_6x0_5x4"]
+size = Vector3(6, 0.5, 4)
+
+[sub_resource type="BoxMesh" id="mesh_8x0_5x4"]
+size = Vector3(8, 0.5, 4)
+
+[sub_resource type="BoxShape3D" id="shape_8x0_5x4"]
+size = Vector3(8, 0.5, 4)
+
+[sub_resource type="BoxMesh" id="mesh_20x0_5x4"]
+size = Vector3(20, 0.5, 4)
+
+[sub_resource type="BoxShape3D" id="shape_20x0_5x4"]
+size = Vector3(20, 0.5, 4)
+
+[sub_resource type="BoxMesh" id="mesh_3x0_5x48"]
+size = Vector3(3, 0.5, 48)
+
+[sub_resource type="BoxShape3D" id="shape_3x0_5x48"]
+size = Vector3(3, 0.5, 48)
+
+[sub_resource type="BoxMesh" id="mesh_12x0_5x6"]
+size = Vector3(12, 0.5, 6)
+
+[sub_resource type="BoxShape3D" id="shape_12x0_5x6"]
+size = Vector3(12, 0.5, 6)
+
+[sub_resource type="BoxMesh" id="mesh_8x0_5x10"]
+size = Vector3(8, 0.5, 10)
+
+[sub_resource type="BoxShape3D" id="shape_8x0_5x10"]
+size = Vector3(8, 0.5, 10)
+
+[node name="Level03" type="Node3D"]
+script = ExtResource("2_script")
+player_scene = ExtResource("1_player")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+rotation = Vector3(-1.2, 0.3, 0)
+light_color = Color(1, 0.95, 0.78, 1)
+light_energy = 0.7
+
+[node name="Lobby" type="StaticBody3D" parent="." groups=["carpet"]]
+position = Vector3(0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Lobby"]
+mesh = SubResource("mesh_14x0_5x10")
+surface_material_override/0 = SubResource("mat_carpet")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Lobby"]
+shape = SubResource("shape_14x0_5x10")
+
+[node name="Hop1" type="StaticBody3D" parent="." groups=["carpet"]]
+position = Vector3(0, 0, 10)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Hop1"]
+mesh = SubResource("mesh_6x0_5x4")
+surface_material_override/0 = SubResource("mat_carpet")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hop1"]
+shape = SubResource("shape_6x0_5x4")
+
+[node name="Hop2" type="StaticBody3D" parent="." groups=["carpet"]]
+position = Vector3(0, 0.5, 17)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Hop2"]
+mesh = SubResource("mesh_6x0_5x4")
+surface_material_override/0 = SubResource("mat_carpet")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hop2"]
+shape = SubResource("shape_6x0_5x4")
+
+[node name="Hop3" type="StaticBody3D" parent="." groups=["carpet"]]
+position = Vector3(0, 0, 24)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Hop3"]
+mesh = SubResource("mesh_6x0_5x4")
+surface_material_override/0 = SubResource("mat_carpet")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hop3"]
+shape = SubResource("shape_6x0_5x4")
+
+[node name="Hop4" type="StaticBody3D" parent="." groups=["carpet"]]
+position = Vector3(0, 0.5, 31)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Hop4"]
+mesh = SubResource("mesh_6x0_5x4")
+surface_material_override/0 = SubResource("mat_carpet")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hop4"]
+shape = SubResource("shape_6x0_5x4")
+
+[node name="GateOneApproach" type="StaticBody3D" parent="." groups=["carpet"]]
+position = Vector3(0, 0, 38)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="GateOneApproach"]
+mesh = SubResource("mesh_8x0_5x4")
+surface_material_override/0 = SubResource("mat_carpet")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GateOneApproach"]
+shape = SubResource("shape_8x0_5x4")
+
+[node name="GateOne" parent="." instance=ExtResource("3_gate")]
+position = Vector3(0, 0, 46)
+question_pool = "backrooms"
+
+[node name="GateOneReconverge" type="StaticBody3D" parent="." groups=["carpet"]]
+position = Vector3(0, 0, 54)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="GateOneReconverge"]
+mesh = SubResource("mesh_20x0_5x4")
+surface_material_override/0 = SubResource("mat_carpet")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GateOneReconverge"]
+shape = SubResource("shape_20x0_5x4")
+
+[node name="Flicker1" parent="." instance=ExtResource("4_flicker")]
+position = Vector3(0, 0, 60.5)
+phase = 0.0
+
+[node name="Flicker2" parent="." instance=ExtResource("4_flicker")]
+position = Vector3(1.5, 0, 67)
+phase = 2.0
+
+[node name="Flicker3" parent="." instance=ExtResource("4_flicker")]
+position = Vector3(-1.5, 0, 73.5)
+phase = 0.0
+
+[node name="Flicker4" parent="." instance=ExtResource("4_flicker")]
+position = Vector3(1.5, 0, 80)
+phase = 2.0
+
+[node name="Flicker5" parent="." instance=ExtResource("4_flicker")]
+position = Vector3(-1.5, 0, 86.5)
+phase = 0.0
+
+[node name="Flicker6" parent="." instance=ExtResource("4_flicker")]
+position = Vector3(0, 0, 93)
+phase = 2.0
+
+[node name="GateTwoApproach" type="StaticBody3D" parent="." groups=["carpet"]]
+position = Vector3(0, 0, 99.5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="GateTwoApproach"]
+mesh = SubResource("mesh_8x0_5x4")
+surface_material_override/0 = SubResource("mat_carpet")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GateTwoApproach"]
+shape = SubResource("shape_8x0_5x4")
+
+[node name="GateTwo" parent="." instance=ExtResource("3_gate")]
+position = Vector3(0, 0, 107.5)
+question_pool = "trivia"
+
+[node name="GateTwoReconverge" type="StaticBody3D" parent="." groups=["carpet"]]
+position = Vector3(0, 0, 115.5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="GateTwoReconverge"]
+mesh = SubResource("mesh_20x0_5x4")
+surface_material_override/0 = SubResource("mat_carpet")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GateTwoReconverge"]
+shape = SubResource("shape_20x0_5x4")
+
+[node name="Catwalk" type="StaticBody3D" parent="." groups=["carpet"]]
+position = Vector3(0, 0, 144.5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Catwalk"]
+mesh = SubResource("mesh_3x0_5x48")
+surface_material_override/0 = SubResource("mat_carpet")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Catwalk"]
+shape = SubResource("shape_3x0_5x48")
+
+[node name="Cannon1" parent="." instance=ExtResource("5_cannon")]
+position = Vector3(6.5, 0, 125)
+rotation = Vector3(0, 1.5708, 0)
+phase = 0.0
+ball_range = 11.5
+
+[node name="Cannon2" parent="." instance=ExtResource("5_cannon")]
+position = Vector3(-6.5, 0, 130)
+rotation = Vector3(0, -1.5708, 0)
+phase = 0.9
+ball_range = 11.5
+
+[node name="Cannon3" parent="." instance=ExtResource("5_cannon")]
+position = Vector3(6.5, 0, 135)
+rotation = Vector3(0, 1.5708, 0)
+phase = 1.8
+ball_range = 11.5
+
+[node name="Cannon4" parent="." instance=ExtResource("5_cannon")]
+position = Vector3(-6.5, 0, 140)
+rotation = Vector3(0, -1.5708, 0)
+phase = 2.7
+ball_range = 11.5
+
+[node name="Cannon5" parent="." instance=ExtResource("5_cannon")]
+position = Vector3(6.5, 0, 145)
+rotation = Vector3(0, 1.5708, 0)
+phase = 0.6
+ball_range = 11.5
+
+[node name="Cannon6" parent="." instance=ExtResource("5_cannon")]
+position = Vector3(-6.5, 0, 150)
+rotation = Vector3(0, -1.5708, 0)
+phase = 1.5
+ball_range = 11.5
+
+[node name="Cannon7" parent="." instance=ExtResource("5_cannon")]
+position = Vector3(6.5, 0, 155)
+rotation = Vector3(0, 1.5708, 0)
+phase = 2.4
+ball_range = 11.5
+
+[node name="Cannon8" parent="." instance=ExtResource("5_cannon")]
+position = Vector3(-6.5, 0, 160)
+rotation = Vector3(0, -1.5708, 0)
+phase = 0.3
+ball_range = 11.5
+
+[node name="Junction" type="StaticBody3D" parent="." groups=["carpet"]]
+position = Vector3(0, 0, 174.5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Junction"]
+mesh = SubResource("mesh_12x0_5x6")
+surface_material_override/0 = SubResource("mat_carpet")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Junction"]
+shape = SubResource("shape_12x0_5x6")
+
+[node name="GoldDoor" parent="." instance=ExtResource("6_door")]
+position = Vector3(-4, 0.25, 175.5)
+sign_text = "BONUS?"
+sign_color = Color(1, 0.85, 0.2, 1)
+glow_color = Color(1, 0.8, 0.2, 1)
+door_color = Color(0.9, 0.7, 0.2, 1)
+player_only = true
+open_range = 5.0
+
+[node name="GoldReturn" type="Marker3D" parent="."]
+position = Vector3(-1, 1.5, 173.5)
+
+[node name="ExitHall" type="StaticBody3D" parent="." groups=["carpet"]]
+position = Vector3(0, 0, 185.5)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="ExitHall"]
+mesh = SubResource("mesh_8x0_5x10")
+surface_material_override/0 = SubResource("mat_carpet")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ExitHall"]
+shape = SubResource("shape_8x0_5x10")
+
+[node name="ExitDoor" parent="." instance=ExtResource("6_door")]
+position = Vector3(0, 0.25, 187.5)
+
+[node name="GoldRooms" parent="." instance=ExtResource("7_gold")]
+position = Vector3(160, 0, 140)
+
+[node name="RacerRoute" type="Node3D" parent="."]
+script = ExtResource("8_route")
+points = PackedVector3Array(0, 1, -1, 0, 1, 4, 0, 1, 10, 0, 1.5, 17, 0, 1, 24, 0, 1.5, 31, 0, 1, 38, 0, 1, 46, 0, 1, 54, 0, 1, 60.5, 1.5, 1, 67, -1.5, 1, 73.5, 1.5, 1, 80, -1.5, 1, 86.5, 0, 1, 93, 0, 1, 99.5, 0, 1, 107.5, 0, 1, 115.5, 0, 1, 122.5, 0, 1, 127.5, 0, 1, 132.5, 0, 1, 137.5, 0, 1, 142.5, 0, 1, 147.5, 0, 1, 152.5, 0, 1, 157.5, 0, 1, 162.5, 0, 1, 167, 0, 1, 174.5, 0, 1, 182, 0, 1, 186, 0, 1, 190)
+gate_indices = PackedInt32Array(7, 16)
+gate_paths = [NodePath("../GateOne"), NodePath("../GateTwo")]
+wait_indices = PackedInt32Array(9, 10, 11, 12, 13, 14, 19, 20, 21, 22, 23, 24, 25, 26)
+wait_paths = [NodePath("../Flicker1"), NodePath("../Flicker2"), NodePath("../Flicker3"), NodePath("../Flicker4"), NodePath("../Flicker5"), NodePath("../Flicker6"), NodePath("../Cannon1"), NodePath("../Cannon2"), NodePath("../Cannon3"), NodePath("../Cannon4"), NodePath("../Cannon5"), NodePath("../Cannon6"), NodePath("../Cannon7"), NodePath("../Cannon8")]
+
+[node name="PlayerStart" type="Marker3D" parent="."]
+position = Vector3(0, 1.5, -1)
+

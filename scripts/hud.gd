@@ -12,6 +12,8 @@ const GO_TIME := 0.8
 @onready var _countdown_title: Label = $Countdown/Title
 @onready var _countdown_ready: Label = $Countdown/Ready
 @onready var _countdown_hint: Label = $Countdown/Hint
+@onready var _bonus_label: Label = $BonusTimer/Label
+@onready var _fade: ColorRect = $Fade
 
 var _announce_timer: float = 0.0
 var _go_timer: float = 0.0
@@ -56,6 +58,32 @@ func _process(delta: float) -> void:
 	_announce_timer -= delta
 	if _announce_timer <= 0.0:
 		$RaceAnnounce.visible = false
+
+func announce(text: String, color: Color = Color(1, 0.85, 0.1)) -> void:
+	_announce_text(text, color)
+
+# --- Bonus stage timer (level_03 Gold Rooms) ---
+
+func show_bonus_timer(seconds_left: float) -> void:
+	$BonusTimer.visible = true
+	set_bonus_time(seconds_left)
+
+func set_bonus_time(seconds_left: float) -> void:
+	_bonus_label.text = "GOLD ROOMS: %d" % int(ceil(maxf(seconds_left, 0.0)))
+	# Last five seconds go red so the cutoff isn't a surprise.
+	_bonus_label.add_theme_color_override("font_color", Color(1, 0.3, 0.2) if seconds_left <= 5.0 else Color(1, 0.85, 0.1))
+
+func hide_bonus_timer() -> void:
+	$BonusTimer.visible = false
+
+# Fades to black, runs `midpoint` (a teleport or scene swap), then fades back in.
+# The HUD is an autoload, so the fade survives a change_scene_to_file() in midpoint.
+func fade_through_black(midpoint: Callable, out_time: float = 0.25, in_time: float = 0.4) -> void:
+	var tween := create_tween()
+	tween.tween_property(_fade, "color:a", 1.0, out_time)
+	tween.tween_callback(midpoint)
+	tween.tween_interval(0.1)
+	tween.tween_property(_fade, "color:a", 0.0, in_time)
 
 func _announce_text(text: String, color: Color) -> void:
 	_announce.text = text

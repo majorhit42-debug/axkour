@@ -1,0 +1,255 @@
+[gd_scene format=3 uid="uid://bgoldrooms001"]
+
+[ext_resource type="Script" path="res://scripts/gold_rooms.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/items/bounce_pad.tscn" id="2_bounce"]
+[ext_resource type="PackedScene" path="res://scenes/hazard/electric_tile_grid.tscn" id="3_egrid"]
+[ext_resource type="PackedScene" path="res://scenes/coin/coin.tscn" id="4_coin"]
+[ext_resource type="PackedScene" path="res://scenes/items/golden_almond_water.tscn" id="5_jackpot"]
+
+[sub_resource type="StandardMaterial3D" id="mat_gold"]
+albedo_color = Color(1, 0.8, 0.25, 1)
+
+[sub_resource type="BoxShape3D" id="shape_catch"]
+size = Vector3(90, 2, 90)
+
+[sub_resource type="BoxMesh" id="mesh_6x0_5x6"]
+size = Vector3(6, 0.5, 6)
+
+[sub_resource type="BoxShape3D" id="shape_6x0_5x6"]
+size = Vector3(6, 0.5, 6)
+
+[sub_resource type="BoxMesh" id="mesh_6x0_5x4"]
+size = Vector3(6, 0.5, 4)
+
+[sub_resource type="BoxShape3D" id="shape_6x0_5x4"]
+size = Vector3(6, 0.5, 4)
+
+[sub_resource type="BoxMesh" id="mesh_4x0_5x4"]
+size = Vector3(4, 0.5, 4)
+
+[sub_resource type="BoxShape3D" id="shape_4x0_5x4"]
+size = Vector3(4, 0.5, 4)
+
+[node name="GoldRooms" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="EntryMarker" type="Marker3D" parent="."]
+position = Vector3(0, 1.5, -1.5)
+
+[node name="EntryPad" type="StaticBody3D" parent="." groups=["gold_carpet"]]
+position = Vector3(0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="EntryPad"]
+mesh = SubResource("mesh_6x0_5x6")
+surface_material_override/0 = SubResource("mat_gold")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EntryPad"]
+shape = SubResource("shape_6x0_5x6")
+
+[node name="GridEnd" type="StaticBody3D" parent="." groups=["gold_carpet"]]
+position = Vector3(0, 0, 17)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="GridEnd"]
+mesh = SubResource("mesh_6x0_5x4")
+surface_material_override/0 = SubResource("mat_gold")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GridEnd"]
+shape = SubResource("shape_6x0_5x4")
+
+[node name="TierOneCenter" type="StaticBody3D" parent="." groups=["gold_carpet"]]
+position = Vector3(0, 5, 12)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TierOneCenter"]
+mesh = SubResource("mesh_4x0_5x4")
+surface_material_override/0 = SubResource("mat_gold")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TierOneCenter"]
+shape = SubResource("shape_4x0_5x4")
+
+[node name="TierOneLeft" type="StaticBody3D" parent="." groups=["gold_carpet"]]
+position = Vector3(-6, 5, 8)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TierOneLeft"]
+mesh = SubResource("mesh_4x0_5x4")
+surface_material_override/0 = SubResource("mat_gold")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TierOneLeft"]
+shape = SubResource("shape_4x0_5x4")
+
+[node name="TierOneRight" type="StaticBody3D" parent="." groups=["gold_carpet"]]
+position = Vector3(6, 5, 8)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TierOneRight"]
+mesh = SubResource("mesh_4x0_5x4")
+surface_material_override/0 = SubResource("mat_gold")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TierOneRight"]
+shape = SubResource("shape_4x0_5x4")
+
+[node name="TierTwoLeft" type="StaticBody3D" parent="." groups=["gold_carpet"]]
+position = Vector3(-5, 10, 20)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TierTwoLeft"]
+mesh = SubResource("mesh_4x0_5x4")
+surface_material_override/0 = SubResource("mat_gold")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TierTwoLeft"]
+shape = SubResource("shape_4x0_5x4")
+
+[node name="TierTwoRight" type="StaticBody3D" parent="." groups=["gold_carpet"]]
+position = Vector3(5, 10, 20)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TierTwoRight"]
+mesh = SubResource("mesh_4x0_5x4")
+surface_material_override/0 = SubResource("mat_gold")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TierTwoRight"]
+shape = SubResource("shape_4x0_5x4")
+
+[node name="JackpotPlatform" type="StaticBody3D" parent="." groups=["gold_carpet"]]
+position = Vector3(0, 15, 27)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="JackpotPlatform"]
+mesh = SubResource("mesh_4x0_5x4")
+surface_material_override/0 = SubResource("mat_gold")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="JackpotPlatform"]
+shape = SubResource("shape_4x0_5x4")
+
+[node name="BouncePad1" parent="." instance=ExtResource("2_bounce")]
+position = Vector3(0, 0.25, 1.5)
+
+[node name="BouncePad2" parent="." instance=ExtResource("2_bounce")]
+position = Vector3(0, 0.25, 17.5)
+
+[node name="BouncePad3" parent="." instance=ExtResource("2_bounce")]
+position = Vector3(0, 5.25, 12.5)
+
+[node name="BouncePad4" parent="." instance=ExtResource("2_bounce")]
+position = Vector3(-5, 10.25, 20.5)
+
+[node name="BouncePad5" parent="." instance=ExtResource("2_bounce")]
+position = Vector3(5, 10.25, 20.5)
+
+[node name="ElectricFloor" parent="." instance=ExtResource("3_egrid")]
+position = Vector3(-3, 0, 5)
+pattern = "S E S S
+S S E S
+E S S E
+S S E S
+S E S S"
+
+[node name="Coin1" parent="." instance=ExtResource("4_coin")]
+position = Vector3(-2, 1.2, -1)
+
+[node name="Coin2" parent="." instance=ExtResource("4_coin")]
+position = Vector3(2, 1.2, -1)
+
+[node name="Coin3" parent="." instance=ExtResource("4_coin")]
+position = Vector3(0, 3.5, 3)
+
+[node name="Coin4" parent="." instance=ExtResource("4_coin")]
+position = Vector3(0, 6, 4.8)
+
+[node name="Coin5" parent="." instance=ExtResource("4_coin")]
+position = Vector3(0, 7.8, 6.6)
+
+[node name="Coin6" parent="." instance=ExtResource("4_coin")]
+position = Vector3(0, 8.4, 8.4)
+
+[node name="Coin7" parent="." instance=ExtResource("4_coin")]
+position = Vector3(0, 7.8, 10.2)
+
+[node name="Coin8" parent="." instance=ExtResource("4_coin")]
+position = Vector3(-2, 1.2, 17)
+
+[node name="Coin9" parent="." instance=ExtResource("4_coin")]
+position = Vector3(2, 1.2, 17)
+
+[node name="Coin10" parent="." instance=ExtResource("4_coin")]
+position = Vector3(-2.5, 13.5, 23.5)
+
+[node name="Coin11" parent="." instance=ExtResource("4_coin")]
+position = Vector3(2.5, 13.5, 23.5)
+
+[node name="Coin12" parent="." instance=ExtResource("4_coin")]
+position = Vector3(-3, 1.2, 5)
+
+[node name="Coin13" parent="." instance=ExtResource("4_coin")]
+position = Vector3(-1, 1.2, 5)
+
+[node name="Coin14" parent="." instance=ExtResource("4_coin")]
+position = Vector3(-1, 1.2, 7)
+
+[node name="Coin15" parent="." instance=ExtResource("4_coin")]
+position = Vector3(-1, 1.2, 9)
+
+[node name="Coin16" parent="." instance=ExtResource("4_coin")]
+position = Vector3(1, 1.2, 9)
+
+[node name="Coin17" parent="." instance=ExtResource("4_coin")]
+position = Vector3(3, 1.2, 9)
+
+[node name="Coin18" parent="." instance=ExtResource("4_coin")]
+position = Vector3(-1, 1.2, 11)
+
+[node name="Coin19" parent="." instance=ExtResource("4_coin")]
+position = Vector3(-3, 1.2, 13)
+
+[node name="Coin20" parent="." instance=ExtResource("4_coin")]
+position = Vector3(1, 1.2, 13)
+
+[node name="Coin21" parent="." instance=ExtResource("4_coin")]
+position = Vector3(3, 1.2, 7)
+
+[node name="Coin22" parent="." instance=ExtResource("4_coin")]
+position = Vector3(-6, 6.2, 6.8)
+
+[node name="Coin23" parent="." instance=ExtResource("4_coin")]
+position = Vector3(-6, 6.2, 8)
+
+[node name="Coin24" parent="." instance=ExtResource("4_coin")]
+position = Vector3(-6, 6.2, 9.2)
+
+[node name="Coin25" parent="." instance=ExtResource("4_coin")]
+position = Vector3(6, 6.2, 6.8)
+
+[node name="Coin26" parent="." instance=ExtResource("4_coin")]
+position = Vector3(6, 6.2, 8)
+
+[node name="Coin27" parent="." instance=ExtResource("4_coin")]
+position = Vector3(6, 6.2, 9.2)
+
+[node name="Coin28" parent="." instance=ExtResource("4_coin")]
+position = Vector3(-6, 11.2, 20)
+
+[node name="Coin29" parent="." instance=ExtResource("4_coin")]
+position = Vector3(-4, 11.2, 20)
+
+[node name="Coin30" parent="." instance=ExtResource("4_coin")]
+position = Vector3(4, 11.2, 20)
+
+[node name="Coin31" parent="." instance=ExtResource("4_coin")]
+position = Vector3(6, 11.2, 20)
+
+[node name="Jackpot" parent="." instance=ExtResource("5_jackpot")]
+position = Vector3(0, 15.25, 27)
+
+[node name="CatchArea" type="Area3D" parent="."]
+position = Vector3(0, -6, 14)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CatchArea"]
+shape = SubResource("shape_catch")
+
+[node name="Chandelier" type="OmniLight3D" parent="."]
+position = Vector3(0, 20, 14)
+light_color = Color(1, 0.85, 0.5, 1)
+light_energy = 3.0
+omni_range = 35.0
+
+[node name="FillLight" type="OmniLight3D" parent="."]
+position = Vector3(0, 6, 4)
+light_color = Color(1, 0.85, 0.5, 1)
+light_energy = 1.5
+omni_range = 18.0
+

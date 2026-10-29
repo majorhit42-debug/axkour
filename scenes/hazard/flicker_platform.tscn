@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://bflickerplat1"]
+
+[ext_resource type="Script" path="res://scripts/flicker_platform.gd" id="1_flicker"]
+
+[sub_resource type="BoxMesh" id="mesh_plat"]
+size = Vector3(4, 0.5, 4)
+
+[sub_resource type="BoxShape3D" id="shape_plat"]
+size = Vector3(4, 0.5, 4)
+
+[sub_resource type="StandardMaterial3D" id="mat_carpet"]
+albedo_color = Color(0.62, 0.55, 0.36, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_frame"]
+albedo_color = Color(0.45, 0.38, 0.22, 1)
+
+[sub_resource type="BoxMesh" id="mesh_frame"]
+size = Vector3(2.2, 0.12, 0.7)
+
+[sub_resource type="BoxMesh" id="mesh_tube"]
+size = Vector3(2.0, 0.08, 0.45)
+
+[sub_resource type="BoxMesh" id="mesh_cord"]
+size = Vector3(0.03, 2.0, 0.03)
+
+[node name="FlickerPlatform" type="StaticBody3D"]
+script = ExtResource("1_flicker")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("mesh_plat")
+surface_material_override/0 = SubResource("mat_carpet")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("shape_plat")
+
+[node name="Lamp" type="Node3D" parent="."]
+position = Vector3(0, 4.8, 0)
+
+[node name="Frame" type="MeshInstance3D" parent="Lamp"]
+mesh = SubResource("mesh_frame")
+surface_material_override/0 = SubResource("mat_frame")
+
+[node name="Tube" type="MeshInstance3D" parent="Lamp"]
+position = Vector3(0, -0.09, 0)
+mesh = SubResource("mesh_tube")
+
+[node name="Cord" type="MeshInstance3D" parent="Lamp"]
+position = Vector3(0, 1.05, 0)
+mesh = SubResource("mesh_cord")
+surface_material_override/0 = SubResource("mat_frame")
+
+[node name="Glow" type="OmniLight3D" parent="Lamp"]
+position = Vector3(0, -0.4, 0)
+light_color = Color(1, 0.95, 0.75, 1)
+light_energy = 1.5
+omni_range = 6.0

@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://bgooball0001"]
+
+[ext_resource type="Script" path="res://scripts/goo_ball.gd" id="1_goo"]
+
+[sub_resource type="SphereShape3D" id="shape_goo"]
+radius = 0.6
+
+[sub_resource type="SphereMesh" id="mesh_goo"]
+radius = 0.55
+height = 1.1
+
+[sub_resource type="StandardMaterial3D" id="mat_goo"]
+albedo_color = Color(0.75, 0.95, 0.25, 1)
+emission_enabled = true
+emission = Color(0.7, 1, 0.2, 1)
+emission_energy_multiplier = 1.6
+roughness = 0.2
+
+[node name="GooBall" type="Area3D"]
+script = ExtResource("1_goo")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("shape_goo")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("mesh_goo")
+surface_material_override/0 = SubResource("mat_goo")

@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://bbouncepad001"]
+
+[ext_resource type="Script" path="res://scripts/bounce_pad.gd" id="1_bounce"]
+
+[sub_resource type="BoxShape3D" id="shape_pad"]
+size = Vector3(1.8, 0.6, 1.8)
+
+[sub_resource type="BoxMesh" id="mesh_base"]
+size = Vector3(2.0, 0.12, 2.0)
+
+[sub_resource type="BoxMesh" id="mesh_cushion"]
+size = Vector3(1.8, 0.2, 1.8)
+
+[sub_resource type="StandardMaterial3D" id="mat_base"]
+albedo_color = Color(0.4, 0.3, 0.12, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_cushion"]
+albedo_color = Color(1, 0.55, 0.15, 1)
+emission_enabled = true
+emission = Color(1, 0.5, 0.1, 1)
+emission_energy_multiplier = 1.2
+
+[node name="BouncePad" type="Area3D"]
+script = ExtResource("1_bounce")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.3, 0)
+shape = SubResource("shape_pad")
+
+[node name="Base" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.06, 0)
+mesh = SubResource("mesh_base")
+surface_material_override/0 = SubResource("mat_base")
+
+[node name="Cushion" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.18, 0)
+mesh = SubResource("mesh_cushion")
+surface_material_override/0 = SubResource("mat_cushion")

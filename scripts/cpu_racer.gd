@@ -26,6 +26,8 @@ const BLUNDER_MAX_SPACING := 2.5  # only blunder on tightly-spaced points (tile 
 const BLUNDER_OFFSET := 2.0
 const FORK_EXIT_AHEAD := 2.6   # fork platforms are 6 deep; run to just inside the far edge
 const FORK_COMMIT_DIST := 9.0  # commit to a fork only once this close to the gate
+const STAGING_X_TOLERANCE := 0.5  # how close to the staging corner counts as lined up
+const CARELESS_SKIP_CHANCE := 0.35  # per hold point, for a bot that rolled careless
 
 @export var racer_name: String = "CPU"
 @export var quiz_accuracy: float = 0.75   # chance of picking the correct quiz fork
@@ -52,6 +54,9 @@ var _has_exit_target: bool = false
 var _pending_fork: Vector3
 var _has_pending_fork: bool = false
 var _staging_for_fork: bool = false
+var _wait_node: Node = null
+var _careless_section: bool = false
+var _skipped_in_section: bool = false
 
 func _ready() -> void:
 	_character_mesh = $CharacterMesh
@@ -135,6 +140,18 @@ func _advance_to(i: int) -> void:
 		if entering_tight and randf() > hazard_awareness:
 			_target.x += BLUNDER_OFFSET * (1.0 if randf() < 0.5 else -1.0)
 
+	# Timed hazard hold points. Carelessness is rolled once per run of hold points
+	# (same reasoning as blunders above), and a careless bot skips at most one wait in
+	# that run — enough to be a real risk without making the section a coin flip per point.
+	_wait_node = _route.wait_at(i)
+	if _wait_node:
+		if _route.wait_at(i - 1) == null:
+			_careless_section = randf() > hazard_awareness
+			_skipped_in_section = false
+		if _careless_section and not _skipped_in_section and randf() < CARELESS_SKIP_CHANCE:
+			_skipped_in_section = true
+			_wait_node = null
+
 	_has_target = true
 
 func _on_route_complete() -> void:
@@ -143,6 +160,14 @@ func _on_route_complete() -> void:
 	finished = true
 	velocity = Vector3.ZERO
 	RaceState.report_finished(racer_name)
+
+# Called by a finish door: the bot is done and leaves the course through it.
+func exit_level() -> void:
+	if is_dead or finished:
+		return
+	finished = true
+	RaceState.report_finished(racer_name)
+	queue_free()
 
 func die() -> void:
 	if is_dead or finished:
@@ -260,11 +285,35 @@ func _physics_process(delta: float) -> void:
 		to_target = _target - global_position
 		to_target.y = 0.0
 
+	# Hold on the current point until the next hazard is safe, then commit: once the bot
+	# sets off it never re-checks, so it can't stop dead in a cannon lane.
+	if _wait_node and is_on_floor():
+		if is_instance_valid(_wait_node) and not _wait_node.is_clear_for(self):
+			velocity.x = 0.0
+			velocity.z = 0.0
+			move_and_slide()
+			_last_pos = global_position
+			_stuck_timer = 0.0
+			if global_position.y < FALL_Y:
+				die()
+			return
+		_wait_node = null
+
 	var move_dir := to_target.normalized() if to_target.length() > 0.01 else Vector3.ZERO
 	velocity.x = move_dir.x * _speed
 	velocity.z = move_dir.z * _speed
 
-	if is_on_floor() and _should_jump(move_dir):
+	var edge_slide := false
+	if is_on_floor() and _staging_for_fork and absf(_target.x - global_position.x) > STAGING_X_TOLERANCE and _should_jump(move_dir):
+		# Hit the platform edge before reaching the corner nearest the fork (the
+		# diagonal run gets there first). Jumping now leaves the arc to cover all
+		# the lateral distance and a slow bot clips the fork's side — slide along
+		# the edge until lined up instead.
+		edge_slide = true
+		velocity.x = signf(_target.x - global_position.x) * _speed
+		velocity.z = 0.0
+
+	if not edge_slide and is_on_floor() and _should_jump(move_dir):
 		if _staging_for_fork:
 			# At the edge now: aim the actual jump at the fork so the arc carries the
 			# remaining lateral distance too.
